@@ -1,0 +1,1276 @@
+openapi: 3.0.3
+info:
+  title: Phenostore FHIR Data API
+  description: |
+    A managed FHIRish datastore API supporting FHIR R4 (v4.0.1) resources.
+    Resources are stored as raw JSON; schema validation is optional and configurable.
+  version: 0.1.0
+  license:
+    name: Proprietary
+
+servers:
+  - url: "{baseUrl}"
+    variables:
+      baseUrl:
+        default: http://localhost:8080
+        description: Phenostore server base URL
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: OAuth
+    description: Token issuance
+  - name: FHIR
+    description: FHIR resource operations
+  - name: Bulk
+    description: Bulk data operations
+  - name: System
+    description: System endpoints
+
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      summary: Health check
+      tags: [System]
+      security: []
+      responses:
+        "200":
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthResponse"
+
+  /oauth/token:
+    post:
+      operationId: issueToken
+      summary: Issue an OAuth2 access token via client credentials
+      tags: [OAuth]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [grant_type, client_id, client_secret]
+              properties:
+                grant_type:
+                  type: string
+                  enum: [client_credentials]
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+                scope:
+                  type: string
+                  description: Space-delimited list of requested scopes (subset of granted permissions)
+      responses:
+        "200":
+          description: Token issued
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "400":
+          description: Invalid request or unsupported grant type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+        "401":
+          description: Invalid client credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthError"
+
+  /v1/tenants/{tenantId}/stores/{storeId}/.well-known/smart-configuration:
+    get:
+      operationId: getSmartConfiguration
+      summary: SMART on FHIR well-known configuration
+      tags: [FHIR]
+      security: []
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+      responses:
+        "200":
+          description: SMART configuration document
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SmartConfiguration"
+
+  /v1/tenants/{tenantId}/stores/{storeId}/metadata:
+    get:
+      operationId: getMetadata
+      summary: FHIR CapabilityStatement
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+      responses:
+        "200":
+          description: CapabilityStatement
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/FhirResource"
+
+  /v1/tenants/{tenantId}/stores/{storeId}:
+    post:
+      operationId: processBundle
+      summary: Process a FHIR transaction or batch Bundle
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+      requestBody:
+        required: true
+        content:
+          application/fhir+json:
+            schema:
+              $ref: "#/components/schemas/FhirResource"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FhirResource"
+      responses:
+        "200":
+          description: Bundle response (transaction-response or batch-response)
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/Bundle"
+        "400":
+          description: Invalid bundle
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+
+  /v1/tenants/{tenantId}/stores/{storeId}/$bulk:
+    post:
+      operationId: submitBulk
+      summary: Submit a bulk operation
+      description: |
+        Submits a batch Bundle for bulk processing. Operations with ≤100 entries
+        are processed synchronously; larger batches are processed asynchronously
+        and return 202 with a Content-Location header for polling.
+      tags: [Bulk]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+      requestBody:
+        required: true
+        content:
+          application/fhir+json:
+            schema:
+              $ref: "#/components/schemas/FhirResource"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FhirResource"
+      responses:
+        "200":
+          description: Synchronous batch response (≤100 entries)
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/Bundle"
+        "202":
+          description: Accepted for async processing (>100 entries)
+          headers:
+            Content-Location:
+              description: URL to poll for operation status
+              schema:
+                type: string
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/BulkOperationAccepted"
+        "400":
+          description: Invalid request
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+
+  /v1/tenants/{tenantId}/stores/{storeId}/$bulk/{opId}:
+    get:
+      operationId: getBulkStatus
+      summary: Get bulk operation status
+      tags: [Bulk]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - name: opId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Bulk operation ID
+      responses:
+        "200":
+          description: Operation completed or failed
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/BulkOperationStatus"
+        "202":
+          description: Operation still in progress
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/BulkOperationStatus"
+        "404":
+          description: Operation not found
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+
+  /v1/tenants/{tenantId}/stores/{storeId}/DocumentReference/$docref:
+    get:
+      operationId: getDocref
+      summary: US Core $docref operation (GET)
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - name: patient
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Patient reference
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Period start date
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Period end date
+        - name: type
+          in: query
+          schema:
+            type: string
+          description: Document type (CodeableConcept token)
+      responses:
+        "200":
+          description: Search results Bundle
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/Bundle"
+        "400":
+          description: Missing required parameter
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+    post:
+      operationId: postDocref
+      summary: US Core $docref operation (POST)
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required: [patient]
+              properties:
+                patient:
+                  type: string
+                  description: Patient reference
+                start:
+                  type: string
+                  format: date
+                  description: Period start date
+                end:
+                  type: string
+                  format: date
+                  description: Period end date
+                type:
+                  type: string
+                  description: Document type (CodeableConcept token)
+      responses:
+        "200":
+          description: Search results Bundle
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/Bundle"
+        "400":
+          description: Missing required parameter
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+
+  /v1/tenants/{tenantId}/stores/{storeId}/{resourceType}/$validate:
+    post:
+      operationId: validateResource
+      summary: Validate a FHIR resource
+      description: |
+        Returns an OperationOutcome with validation results. Always returns
+        HTTP 200 regardless of whether the resource is valid.
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - $ref: "#/components/parameters/resourceType"
+      requestBody:
+        required: true
+        content:
+          application/fhir+json:
+            schema:
+              $ref: "#/components/schemas/FhirResource"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FhirResource"
+      responses:
+        "200":
+          description: Validation result (always 200)
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+
+  /v1/tenants/{tenantId}/stores/{storeId}/{resourceType}:
+    post:
+      operationId: createResource
+      summary: Create a FHIR resource
+      description: |
+        Creates a new resource with a server-assigned ID. Supports conditional
+        create via the If-None-Exist header.
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - $ref: "#/components/parameters/resourceType"
+        - name: If-None-Exist
+          in: header
+          schema:
+            type: string
+          description: |
+            Conditional create search criteria (URL query string format).
+            0 matches → create (201), 1 match → return existing (200), 2+ → 412.
+      requestBody:
+        required: true
+        content:
+          application/fhir+json:
+            schema:
+              $ref: "#/components/schemas/FhirResource"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FhirResource"
+      responses:
+        "200":
+          description: Conditional create matched existing resource
+          headers:
+            ETag:
+              $ref: "#/components/headers/ETag"
+            Location:
+              $ref: "#/components/headers/Location"
+            Last-Modified:
+              $ref: "#/components/headers/LastModified"
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/FhirResource"
+        "201":
+          description: Resource created
+          headers:
+            ETag:
+              $ref: "#/components/headers/ETag"
+            Location:
+              $ref: "#/components/headers/Location"
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/FhirResource"
+        "400":
+          description: Invalid request
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "412":
+          description: Conditional create matched multiple resources
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "422":
+          description: Validation failed (strict mode)
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+    get:
+      operationId: searchResources
+      summary: Search for FHIR resources
+      description: |
+        Searches for resources of the given type. Supports standard FHIR search
+        parameters, pagination, sorting, _include/_revinclude, and response shaping.
+        Arbitrary FHIR search parameters beyond the named ones below are also accepted.
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - $ref: "#/components/parameters/resourceType"
+        - $ref: "#/components/parameters/searchCount"
+        - $ref: "#/components/parameters/searchOffset"
+        - $ref: "#/components/parameters/searchCursor"
+        - $ref: "#/components/parameters/searchTotal"
+        - $ref: "#/components/parameters/searchSummary"
+        - $ref: "#/components/parameters/searchElements"
+        - $ref: "#/components/parameters/searchSort"
+        - $ref: "#/components/parameters/searchInclude"
+        - $ref: "#/components/parameters/searchRevinclude"
+      responses:
+        "200":
+          description: Search results Bundle
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/Bundle"
+        "400":
+          description: Invalid search parameters
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+    delete:
+      operationId: conditionalDeleteResource
+      summary: Conditionally delete a FHIR resource
+      description: |
+        Deletes a resource matching the given search criteria.
+        0 matches → 204, 1 match → delete + 204, 2+ matches → 412.
+        Requires at least one search parameter. Pass FHIR search parameters
+        as query parameters (e.g. ?identifier=http://example.com|123).
+        Any resource-type-specific search parameter is accepted in addition
+        to the common parameters listed below.
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - $ref: "#/components/parameters/resourceType"
+        - name: _id
+          in: query
+          description: Logical id of the resource
+          schema:
+            type: string
+        - name: _lastUpdated
+          in: query
+          description: Date the resource was last updated (prefix with lt, gt, ge, le for ranges)
+          schema:
+            type: string
+        - name: identifier
+          in: query
+          description: "Resource identifier (system|value, value, or |value)"
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Resource deleted (or no match found)
+        "400":
+          description: Missing search parameters
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "412":
+          description: Multiple resources match criteria
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+
+  /v1/tenants/{tenantId}/stores/{storeId}/{resourceType}/_search:
+    post:
+      operationId: searchResourcesPost
+      summary: Search for FHIR resources (POST)
+      description: |
+        Same as GET search but parameters are sent via form-encoded POST body.
+        URL query parameters and form body parameters are merged.
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - $ref: "#/components/parameters/resourceType"
+      requestBody:
+        required: false
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                _count:
+                  type: integer
+                _offset:
+                  type: integer
+                _cursor:
+                  type: string
+                _total:
+                  type: string
+                  enum: [none, estimate, accurate]
+                _summary:
+                  type: string
+                  enum: ["true", "false", text, count, data]
+                _elements:
+                  type: string
+                _sort:
+                  type: string
+                _include:
+                  type: array
+                  items:
+                    type: string
+                _revinclude:
+                  type: array
+                  items:
+                    type: string
+              additionalProperties:
+                type: string
+      responses:
+        "200":
+          description: Search results Bundle
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/Bundle"
+        "400":
+          description: Invalid search parameters
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+
+  /v1/tenants/{tenantId}/stores/{storeId}/{resourceType}/{id}:
+    get:
+      operationId: readResource
+      summary: Read a FHIR resource
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - $ref: "#/components/parameters/resourceType"
+        - $ref: "#/components/parameters/fhirId"
+      responses:
+        "200":
+          description: Resource found
+          headers:
+            ETag:
+              $ref: "#/components/headers/ETag"
+            Last-Modified:
+              $ref: "#/components/headers/LastModified"
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/FhirResource"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "404":
+          description: Resource not found
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "410":
+          description: Resource deleted
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+    put:
+      operationId: updateResource
+      summary: Update or upsert a FHIR resource
+      description: |
+        Updates an existing resource or creates it if it doesn't exist (upsert).
+        Supports conditional update via the If-Match header for optimistic locking.
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - $ref: "#/components/parameters/resourceType"
+        - $ref: "#/components/parameters/fhirId"
+        - name: If-Match
+          in: header
+          schema:
+            type: string
+          description: 'Weak ETag for conditional update (format: W/"version")'
+      requestBody:
+        required: true
+        content:
+          application/fhir+json:
+            schema:
+              $ref: "#/components/schemas/FhirResource"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FhirResource"
+      responses:
+        "200":
+          description: Resource updated
+          headers:
+            ETag:
+              $ref: "#/components/headers/ETag"
+            Last-Modified:
+              $ref: "#/components/headers/LastModified"
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/FhirResource"
+        "201":
+          description: Resource created via upsert
+          headers:
+            ETag:
+              $ref: "#/components/headers/ETag"
+            Location:
+              $ref: "#/components/headers/Location"
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/FhirResource"
+        "400":
+          description: Invalid request
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "404":
+          description: Resource not found (conditional update)
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "410":
+          description: Resource deleted
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "412":
+          description: Version conflict (If-Match)
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "422":
+          description: Validation failed (strict mode)
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+    patch:
+      operationId: patchResource
+      summary: Patch a FHIR resource (JSON Patch)
+      description: |
+        Applies a JSON Patch (RFC 6902) to an existing resource.
+        Supports conditional update via the If-Match header.
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - $ref: "#/components/parameters/resourceType"
+        - $ref: "#/components/parameters/fhirId"
+        - name: If-Match
+          in: header
+          schema:
+            type: string
+          description: 'Weak ETag for conditional update (format: W/"version")'
+      requestBody:
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: "#/components/schemas/JsonPatch"
+      responses:
+        "200":
+          description: Resource patched
+          headers:
+            ETag:
+              $ref: "#/components/headers/ETag"
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/FhirResource"
+        "400":
+          description: Invalid patch document
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "404":
+          description: Resource not found
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "410":
+          description: Resource deleted
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "412":
+          description: Version conflict (If-Match)
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "422":
+          description: Patch application or validation failed
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+    delete:
+      operationId: deleteResource
+      summary: Delete a FHIR resource
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - $ref: "#/components/parameters/resourceType"
+        - $ref: "#/components/parameters/fhirId"
+      responses:
+        "204":
+          description: Resource deleted
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "404":
+          description: Resource not found
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "410":
+          description: Resource already deleted
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+
+  /v1/tenants/{tenantId}/stores/{storeId}/{resourceType}/{id}/_history:
+    get:
+      operationId: getResourceHistory
+      summary: Get resource instance history
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - $ref: "#/components/parameters/resourceType"
+        - $ref: "#/components/parameters/fhirId"
+        - name: _count
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+          description: Page size (max 100)
+        - name: _offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+            maximum: 10000
+          description: Offset for pagination
+      responses:
+        "200":
+          description: History Bundle
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/Bundle"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+
+  /v1/tenants/{tenantId}/stores/{storeId}/{resourceType}/{id}/_history/{versionId}:
+    get:
+      operationId: readResourceVersion
+      summary: Read a specific version of a FHIR resource
+      tags: [FHIR]
+      parameters:
+        - $ref: "#/components/parameters/tenantId"
+        - $ref: "#/components/parameters/storeId"
+        - $ref: "#/components/parameters/resourceType"
+        - $ref: "#/components/parameters/fhirId"
+        - name: versionId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Version number
+      responses:
+        "200":
+          description: Resource version found
+          headers:
+            ETag:
+              $ref: "#/components/headers/ETag"
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/FhirResource"
+        "400":
+          description: Invalid version ID
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "403":
+          description: Insufficient permissions
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+        "404":
+          description: Version not found
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "#/components/schemas/OperationOutcome"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    tenantId:
+      name: tenantId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Tenant identifier
+    storeId:
+      name: storeId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Store identifier
+    resourceType:
+      name: resourceType
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+          - AllergyIntolerance
+          - CarePlan
+          - CareTeam
+          - Condition
+          - Coverage
+          - Device
+          - DiagnosticReport
+          - DocumentReference
+          - Encounter
+          - FamilyMemberHistory
+          - Goal
+          - Immunization
+          - Location
+          - Medication
+          - MedicationDispense
+          - MedicationRequest
+          - Observation
+          - Organization
+          - Patient
+          - Practitioner
+          - PractitionerRole
+          - Procedure
+          - Provenance
+          - QuestionnaireResponse
+          - RelatedPerson
+          - ServiceRequest
+          - Specimen
+      description: FHIR resource type
+    fhirId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: "^[A-Za-z0-9\\-\\.]{1,64}$"
+      description: FHIR resource ID
+    searchCount:
+      name: _count
+      in: query
+      schema:
+        type: integer
+        default: 20
+        maximum: 1000
+      description: Page size (max 1000)
+    searchOffset:
+      name: _offset
+      in: query
+      schema:
+        type: integer
+        default: 0
+        maximum: 10000
+      description: Offset for offset-based pagination
+    searchCursor:
+      name: _cursor
+      in: query
+      schema:
+        type: string
+      description: Opaque cursor for keyset pagination
+    searchTotal:
+      name: _total
+      in: query
+      schema:
+        type: string
+        enum: [none, estimate, accurate]
+      description: Controls whether total count is included in results
+    searchSummary:
+      name: _summary
+      in: query
+      schema:
+        type: string
+        enum: ["true", "false", text, count, data]
+      description: Response summary mode
+    searchElements:
+      name: _elements
+      in: query
+      schema:
+        type: string
+      description: Comma-separated list of element names to include
+    searchSort:
+      name: _sort
+      in: query
+      schema:
+        type: string
+      description: Comma-separated sort fields (prefix with - for descending)
+    searchInclude:
+      name: _include
+      in: query
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+      description: "Include referenced resources (format: ResourceType:param[:targetType]). Repeatable."
+    searchRevinclude:
+      name: _revinclude
+      in: query
+      explode: true
+      schema:
+        type: array
+        items:
+          type: string
+      description: "Reverse include (format: ResourceType:param[:targetType]). Repeatable."
+
+  headers:
+    ETag:
+      description: 'Weak ETag with version number (format: W/"version")'
+      schema:
+        type: string
+    Location:
+      description: URL of the created resource
+      schema:
+        type: string
+    LastModified:
+      description: Last modification timestamp
+      schema:
+        type: string
+        format: date-time
+
+  schemas:
+    FhirResource:
+      type: object
+      additionalProperties: true
+      description: An arbitrary FHIR resource stored as raw JSON.
+      x-go-type: RawJSON
+
+    OperationOutcome:
+      type: object
+      required: [resourceType, issue]
+      properties:
+        resourceType:
+          type: string
+          enum: [OperationOutcome]
+        issue:
+          type: array
+          items:
+            $ref: "#/components/schemas/OperationOutcomeIssue"
+
+    OperationOutcomeIssue:
+      type: object
+      required: [severity, code]
+      properties:
+        severity:
+          type: string
+          enum: [fatal, error, warning, information]
+        code:
+          type: string
+          description: FHIR issue type code
+        diagnostics:
+          type: string
+        expression:
+          type: array
+          items:
+            type: string
+
+    Bundle:
+      type: object
+      required: [resourceType, type]
+      properties:
+        resourceType:
+          type: string
+          enum: [Bundle]
+        type:
+          type: string
+          enum:
+            - searchset
+            - history
+            - transaction-response
+            - batch-response
+        total:
+          type: integer
+        link:
+          type: array
+          items:
+            $ref: "#/components/schemas/BundleLink"
+        entry:
+          type: array
+          items:
+            $ref: "#/components/schemas/BundleEntry"
+
+    BundleLink:
+      type: object
+      required: [relation, url]
+      properties:
+        relation:
+          type: string
+        url:
+          type: string
+
+    BundleEntry:
+      type: object
+      properties:
+        fullUrl:
+          type: string
+        resource:
+          description: The resource content (arbitrary FHIR resource JSON).
+          x-go-type: RawJSON
+        search:
+          type: object
+          properties:
+            mode:
+              type: string
+              enum: [match, include]
+        request:
+          type: object
+          properties:
+            method:
+              type: string
+            url:
+              type: string
+        response:
+          type: object
+          properties:
+            status:
+              type: string
+            location:
+              type: string
+            etag:
+              type: string
+            lastModified:
+              type: string
+            outcome:
+              description: OperationOutcome for this entry (arbitrary JSON).
+              x-go-type: RawJSON
+
+    HealthResponse:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ok]
+
+    TokenResponse:
+      type: object
+      required: [access_token, token_type, expires_in, scope]
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          enum: [Bearer]
+        expires_in:
+          type: integer
+          description: Token lifetime in seconds
+        scope:
+          type: string
+          description: Space-delimited list of granted scopes
+
+    OAuthError:
+      type: object
+      required: [error, error_description]
+      properties:
+        error:
+          type: string
+          description: OAuth2 error code (RFC 6749)
+        error_description:
+          type: string
+
+    SmartConfiguration:
+      type: object
+      properties:
+        token_endpoint:
+          type: string
+        grant_types_supported:
+          type: array
+          items:
+            type: string
+        token_endpoint_auth_methods_supported:
+          type: array
+          items:
+            type: string
+        scopes_supported:
+          type: array
+          items:
+            type: string
+        capabilities:
+          type: array
+          items:
+            type: string
+
+    BulkOperationAccepted:
+      type: object
+      required: [id, status, total]
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [pending]
+        total:
+          type: integer
+
+    BulkOperationStatus:
+      type: object
+      required: [id, status, total_count, processed_count, error_count, created_at, updated_at]
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [pending, processing, completed, failed]
+        total_count:
+          type: integer
+        processed_count:
+          type: integer
+        error_count:
+          type: integer
+        result:
+          description: Result Bundle (present when status is completed).
+          x-go-type: RawJSON
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    JsonPatch:
+      type: array
+      description: JSON Patch document (RFC 6902)
+      items:
+        type: object
+        required: [op, path]
+        properties:
+          op:
+            type: string
+            enum: [add, remove, replace, move, copy, test]
+          path:
+            type: string
+          value: {}
+          from:
+            type: string

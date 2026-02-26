@@ -1,0 +1,6 @@
+package: gen
+generate:
+  client: true
+  models: true
+  embedded-spec: false
+output: gen/generated.go
