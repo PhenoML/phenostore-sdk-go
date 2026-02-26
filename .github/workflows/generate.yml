@@ -37,17 +37,34 @@ jobs:
 
       - name: Create pull request
         if: github.event_name == 'repository_dispatch'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          commit-message: "feat: regenerate SDK from spec ${{ github.event.client_payload.spec_sha }}"
-          branch: sdk-regen/${{ github.event.client_payload.spec_sha }}
-          title: "feat: regenerate SDK from spec ${{ github.event.client_payload.spec_sha }}"
-          body: |
-            Automated SDK regeneration.
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SPEC_SHA: ${{ github.event.client_payload.spec_sha }}
+          PHENOSTORE_SHA: ${{ github.event.client_payload.phenostore_sha }}
+        run: |
+          BRANCH="sdk-regen/${SPEC_SHA}"
 
-            **Spec version:** `${{ github.event.client_payload.spec_sha }}`
-            **Phenostore commit:** `${{ github.event.client_payload.phenostore_sha }}`
+          # Check if there are actual changes to commit
+          if git diff --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
 
-            > Adjust the PR title prefix before merging to control the version bump:
-            > `feat:` → minor, `fix:` → patch, `feat!:` → major, `chore:` → no release.
-          delete-branch: true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add -A
+          git commit -m "feat: regenerate SDK from spec ${SPEC_SHA}"
+          git push -u origin "$BRANCH"
+
+          gh pr create \
+            --base main \
+            --head "$BRANCH" \
+            --title "feat: regenerate SDK from spec ${SPEC_SHA}" \
+            --body "Automated SDK regeneration.
+
+          **Spec version:** \`${SPEC_SHA}\`
+          **Phenostore commit:** \`${PHENOSTORE_SHA}\`
+
+          > Adjust the PR title prefix before merging to control the version bump:
+          > \`feat:\` → minor, \`fix:\` → patch, \`feat!:\` → major, \`chore:\` → no release."
