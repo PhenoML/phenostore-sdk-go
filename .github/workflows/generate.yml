@@ -1,0 +1,53 @@
+name: Regenerate SDK
+
+on:
+  repository_dispatch:
+    types: [spec-updated]
+  workflow_dispatch: # manual trigger (uses committed api/openapi.yaml)
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+
+      - name: Update spec from dispatch payload
+        if: github.event_name == 'repository_dispatch'
+        env:
+          SPEC_B64: ${{ github.event.client_payload.spec_b64 }}
+        run: |
+          echo "$SPEC_B64" | base64 -d > api/openapi.yaml
+
+      - name: Regenerate client
+        run: go generate ./phenostore/
+
+      - name: Verify compilation
+        run: go build ./...
+
+      - name: Run tests
+        run: go test -race -count=1 -timeout 5m ./...
+
+      - name: Create pull request
+        if: github.event_name == 'repository_dispatch'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "feat: regenerate SDK from spec ${{ github.event.client_payload.spec_sha }}"
+          branch: sdk-regen/${{ github.event.client_payload.spec_sha }}
+          title: "feat: regenerate SDK from spec ${{ github.event.client_payload.spec_sha }}"
+          body: |
+            Automated SDK regeneration.
+
+            **Spec version:** `${{ github.event.client_payload.spec_sha }}`
+            **Phenostore commit:** `${{ github.event.client_payload.phenostore_sha }}`
+
+            > Adjust the PR title prefix before merging to control the version bump:
+            > `feat:` → minor, `fix:` → patch, `feat!:` → major, `chore:` → no release.
+          delete-branch: true
