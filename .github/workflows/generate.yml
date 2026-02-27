@@ -41,6 +41,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SPEC_SHA: ${{ github.event.client_payload.spec_sha }}
           PHENOSTORE_SHA: ${{ github.event.client_payload.phenostore_sha }}
+          PR_TITLE: ${{ github.event.client_payload.pr_title }}
         run: |
           BRANCH="sdk-regen/${SPEC_SHA}"
 
@@ -54,13 +55,20 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git add -A
-          git commit -m "feat: regenerate SDK from spec ${SPEC_SHA}"
+
+          if [[ -n "${PR_TITLE}" ]]; then
+            COMMIT_TITLE="feat: regenerate SDK — ${PR_TITLE}"
+          else
+            COMMIT_TITLE="feat: regenerate SDK from spec ${SPEC_SHA}"
+          fi
+
+          git commit -m "${COMMIT_TITLE}"
           git push -u origin "$BRANCH"
 
           gh pr create \
             --base main \
             --head "$BRANCH" \
-            --title "feat: regenerate SDK from spec ${SPEC_SHA}" \
+            --title "${COMMIT_TITLE}" \
             --body "Automated SDK regeneration.
 
           **Spec version:** \`${SPEC_SHA}\`
