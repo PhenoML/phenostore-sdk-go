@@ -943,21 +943,29 @@ components:
         type: string
         enum:
           - AllergyIntolerance
+          - Appointment
           - CarePlan
           - CareTeam
+          - Claim
+          - Communication
           - Condition
+          - Consent
           - Coverage
           - Device
           - DiagnosticReport
           - DocumentReference
           - Encounter
+          - ExplanationOfBenefit
           - FamilyMemberHistory
           - Goal
+          - HealthcareService
           - Immunization
           - Location
           - Medication
+          - MedicationAdministration
           - MedicationDispense
           - MedicationRequest
+          - MedicationStatement
           - Observation
           - Organization
           - Patient
@@ -965,10 +973,15 @@ components:
           - PractitionerRole
           - Procedure
           - Provenance
+          - Questionnaire
           - QuestionnaireResponse
           - RelatedPerson
+          - Schedule
           - ServiceRequest
+          - Slot
           - Specimen
+          - Subscription
+          - Task
       description: FHIR resource type
     fhirId:
       name: id
