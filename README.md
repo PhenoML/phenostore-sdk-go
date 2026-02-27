@@ -88,6 +88,16 @@ client, err := phenostore.NewClient(baseURL, clientID, clientSecret, tenant, sto
 
 Use `phenostore.WithScopes(...)` to request specific OAuth2 scopes during token exchange.
 
+## Code generation
+
+The client code in `phenostore/gen/` is generated from the OpenAPI spec in `api/openapi.yaml` using [oapi-codegen](https://github.com/oapi-codegen/oapi-codegen). The spec is imported from the upstream Phenostore API repo — do not edit it directly here. To regenerate after a spec update:
+
+```sh
+make generate
+```
+
+The `make check-generated` target verifies the generated code is in sync with the spec.
+
 ## License
 
 [MIT](LICENSE)
