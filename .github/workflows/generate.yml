@@ -51,7 +51,7 @@ jobs:
         if: steps.try-build.outcome == 'failure'
         uses: anthropics/claude-code-base-action@beta
         with:
-          prompt_file: .github/prompts/fix-generated-client.md
+          prompt_file: .github/prompts/adapt-to-generated-changes.md
           allowed_tools: "View,Edit,Write,GlobTool,GrepTool,Bash(go:*)"
           max_turns: "15"
           # Auth option 1: Anthropic API key (simplest — store as repo secret)

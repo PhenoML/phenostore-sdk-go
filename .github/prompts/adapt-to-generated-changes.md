@@ -4,13 +4,12 @@ then update the hand-written files to match.
 
 ## Steps
 
-1. Run `go build ./...` to see if there are compilation errors.
-2. Diff or read `phenostore/gen/generated.go` to understand the API changes
+1. Read `phenostore/gen/generated.go` to understand the API changes
    (new endpoints, renamed types, changed parameters, etc.).
-3. Update `phenostore/client.go`, `phenostore/errors.go`, and `examples/`
+2. Update `phenostore/client.go`, `phenostore/errors.go`, and `examples/`
    as needed — both to fix any compilation errors and to expose meaningful
    new API surface through the convenience layer.
-4. Run `go build ./...` and `go vet ./...` to verify.
+3. Run `go build ./...` and `go vet ./...` to verify.
 
 ## Guidelines
 
