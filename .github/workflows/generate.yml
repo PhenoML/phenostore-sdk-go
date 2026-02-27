@@ -79,6 +79,8 @@ jobs:
           allowed_tools: "View,GlobTool,GrepTool,Bash(git:*),Write"
           max_turns: "5"
           anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
+          claude_env: |
+            PR_TITLE: ${{ github.event.client_payload.pr_title }}
 
       - name: Create pull request
         if: github.event_name == 'repository_dispatch'
