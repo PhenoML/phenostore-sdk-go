@@ -14,7 +14,9 @@ import (
 // Client wraps the generated ClientWithResponses with OAuth2 authentication
 // and convenience methods for common FHIR operations.
 type Client struct {
-	inner *gen.ClientWithResponses
+	inner  *gen.ClientWithResponses
+	tenant string
+	store  string
 }
 
 // Option configures the Phenostore client.
@@ -42,7 +44,7 @@ func WithHTTPClient(hc *http.Client) Option {
 
 // NewClient creates a Phenostore client that authenticates using OAuth2
 // client credentials. Tokens are acquired lazily and refreshed automatically.
-func NewClient(baseURL, clientID, clientSecret string, opts ...Option) (*Client, error) {
+func NewClient(baseURL, clientID, clientSecret, tenant, store string, opts ...Option) (*Client, error) {
 	o := &options{}
 	for _, opt := range opts {
 		opt(o)
@@ -68,7 +70,17 @@ func NewClient(baseURL, clientID, clientSecret string, opts ...Option) (*Client,
 		return nil, fmt.Errorf("creating client: %w", err)
 	}
 
-	return &Client{inner: inner}, nil
+	return &Client{inner: inner, tenant: tenant, store: store}, nil
+}
+
+// Tenant returns the tenant configured on this client.
+func (c *Client) Tenant() string {
+	return c.tenant
+}
+
+// Store returns the store configured on this client.
+func (c *Client) Store() string {
+	return c.store
 }
 
 // Inner returns the generated ClientWithResponses for operations not covered
@@ -78,8 +90,8 @@ func (c *Client) Inner() *gen.ClientWithResponses {
 }
 
 // ReadResource retrieves a single FHIR resource by type and ID.
-func (c *Client) ReadResource(ctx context.Context, tenant, store, resourceType, id string) (json.RawMessage, error) {
-	resp, err := c.inner.ReadResourceWithResponse(ctx, tenant, store, gen.ReadResourceParamsResourceType(resourceType), id)
+func (c *Client) ReadResource(ctx context.Context, resourceType, id string) (json.RawMessage, error) {
+	resp, err := c.inner.ReadResourceWithResponse(ctx, c.tenant, c.store, gen.ReadResourceParamsResourceType(resourceType), id)
 	if err != nil {
 		return nil, err
 	}
@@ -91,8 +103,8 @@ func (c *Client) ReadResource(ctx context.Context, tenant, store, resourceType, 
 
 // CreateResource creates a new FHIR resource. Returns the created resource.
 // Handles both 200 (conditional create, already exists) and 201 (created).
-func (c *Client) CreateResource(ctx context.Context, tenant, store, resourceType string, body json.RawMessage, params *gen.CreateResourceParams) (json.RawMessage, error) {
-	resp, err := c.inner.CreateResourceWithResponse(ctx, tenant, store, gen.CreateResourceParamsResourceType(resourceType), params, body)
+func (c *Client) CreateResource(ctx context.Context, resourceType string, body json.RawMessage, params *gen.CreateResourceParams) (json.RawMessage, error) {
+	resp, err := c.inner.CreateResourceWithResponse(ctx, c.tenant, c.store, gen.CreateResourceParamsResourceType(resourceType), params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -104,8 +116,8 @@ func (c *Client) CreateResource(ctx context.Context, tenant, store, resourceType
 
 // UpdateResource updates an existing FHIR resource, or creates it (upsert).
 // Handles both 200 (updated) and 201 (created via upsert).
-func (c *Client) UpdateResource(ctx context.Context, tenant, store, resourceType, id string, body json.RawMessage, params *gen.UpdateResourceParams) (json.RawMessage, error) {
-	resp, err := c.inner.UpdateResourceWithResponse(ctx, tenant, store, gen.UpdateResourceParamsResourceType(resourceType), id, params, body)
+func (c *Client) UpdateResource(ctx context.Context, resourceType, id string, body json.RawMessage, params *gen.UpdateResourceParams) (json.RawMessage, error) {
+	resp, err := c.inner.UpdateResourceWithResponse(ctx, c.tenant, c.store, gen.UpdateResourceParamsResourceType(resourceType), id, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -116,8 +128,8 @@ func (c *Client) UpdateResource(ctx context.Context, tenant, store, resourceType
 }
 
 // DeleteResource deletes a FHIR resource.
-func (c *Client) DeleteResource(ctx context.Context, tenant, store, resourceType, id string) error {
-	resp, err := c.inner.DeleteResourceWithResponse(ctx, tenant, store, gen.DeleteResourceParamsResourceType(resourceType), id)
+func (c *Client) DeleteResource(ctx context.Context, resourceType, id string) error {
+	resp, err := c.inner.DeleteResourceWithResponse(ctx, c.tenant, c.store, gen.DeleteResourceParamsResourceType(resourceType), id)
 	if err != nil {
 		return err
 	}
@@ -128,8 +140,8 @@ func (c *Client) DeleteResource(ctx context.Context, tenant, store, resourceType
 }
 
 // SearchResources searches for FHIR resources matching the given parameters.
-func (c *Client) SearchResources(ctx context.Context, tenant, store, resourceType string, params *gen.SearchResourcesParams) (*gen.Bundle, error) {
-	resp, err := c.inner.SearchResourcesWithResponse(ctx, tenant, store, gen.SearchResourcesParamsResourceType(resourceType), params)
+func (c *Client) SearchResources(ctx context.Context, resourceType string, params *gen.SearchResourcesParams) (*gen.Bundle, error) {
+	resp, err := c.inner.SearchResourcesWithResponse(ctx, c.tenant, c.store, gen.SearchResourcesParamsResourceType(resourceType), params)
 	if err != nil {
 		return nil, err
 	}
@@ -144,8 +156,8 @@ func (c *Client) SearchResources(ctx context.Context, tenant, store, resourceTyp
 }
 
 // ProcessBundle processes a FHIR transaction or batch bundle.
-func (c *Client) ProcessBundle(ctx context.Context, tenant, store string, bundle json.RawMessage) (*gen.Bundle, error) {
-	resp, err := c.inner.ProcessBundleWithResponse(ctx, tenant, store, bundle)
+func (c *Client) ProcessBundle(ctx context.Context, bundle json.RawMessage) (*gen.Bundle, error) {
+	resp, err := c.inner.ProcessBundleWithResponse(ctx, c.tenant, c.store, bundle)
 	if err != nil {
 		return nil, err
 	}

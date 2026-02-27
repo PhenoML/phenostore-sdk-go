@@ -27,6 +27,8 @@ func main() {
 		"https://api.phenostore.example.com",
 		"your-client-id",
 		"your-client-secret",
+		"my-tenant",
+		"my-store",
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -35,7 +37,7 @@ func main() {
 	ctx := context.Background()
 
 	// Read a Patient
-	patient, err := client.ReadResource(ctx, "my-tenant", "my-store", "Patient", "pat-123")
+	patient, err := client.ReadResource(ctx, "Patient", "pat-123")
 	if phenostore.IsNotFound(err) {
 		fmt.Println("not found")
 		return
@@ -52,7 +54,7 @@ func main() {
 		"code": {"text": "Blood pressure"},
 		"subject": {"reference": "Patient/pat-123"}
 	}`)
-	created, err := client.CreateResource(ctx, "my-tenant", "my-store", "Observation", obs, nil)
+	created, err := client.CreateResource(ctx, "Observation", obs, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -79,7 +81,7 @@ The client authenticates via OAuth2 client credentials. Tokens are acquired lazi
 
 ```go
 // Custom HTTP client (e.g. for custom TLS)
-client, err := phenostore.NewClient(baseURL, clientID, clientSecret,
+client, err := phenostore.NewClient(baseURL, clientID, clientSecret, tenant, store,
 	phenostore.WithHTTPClient(myHTTPClient),
 )
 ```
