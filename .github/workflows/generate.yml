@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  # id-token: write  # uncomment for AWS Bedrock or Google Vertex AI OIDC auth
 
 jobs:
   regenerate:
@@ -28,6 +29,31 @@ jobs:
 
       - name: Regenerate client
         run: go generate ./phenostore/
+
+      - name: Check if build passes after regeneration
+        id: try-build
+        continue-on-error: true
+        run: go build ./...
+
+      # If the spec introduced breaking type changes, use Claude Code to
+      # adapt the hand-written wrapper (client.go, errors.go, examples/).
+      - name: Adapt wrapper to generated changes
+        if: steps.try-build.outcome == 'failure'
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          prompt_file: .github/prompts/fix-generated-client.md
+          allowed_tools: "View,Edit,Write,GlobTool,GrepTool,Bash(go:*)"
+          max_turns: "15"
+          # Auth option 1: Anthropic API key (simplest — store as repo secret)
+          anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
+          # Auth option 2: AWS Bedrock (no user-specific key, uses OIDC)
+          #   Requires: aws-actions/configure-aws-credentials step + id-token permission
+          # use_bedrock: "true"
+          # model: "anthropic.claude-4-0-sonnet-20250805-v1:0"
+          # Auth option 3: Google Vertex AI (no user-specific key, uses OIDC)
+          #   Requires: google-github-actions/auth step + id-token permission
+          # use_vertex: "true"
+          # model: "claude-4-0-sonnet@20250805"
 
       - name: Verify compilation
         run: go build ./...
