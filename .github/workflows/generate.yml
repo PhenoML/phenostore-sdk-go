@@ -63,6 +63,7 @@ jobs:
 
       - name: Generate commit message
         if: github.event_name == 'repository_dispatch'
+        continue-on-error: true
         uses: anthropics/claude-code-base-action@beta
         with:
           prompt_file: .github/prompts/generate-commit-message.md
