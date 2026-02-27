@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.0.2...v0.0.3) (2026-02-27)
+
+
+### Features
+
+* regenerate SDK from spec 30982d5e ([#7](https://github.com/PhenoML/phenostore-sdk-go/issues/7)) ([14145c0](https://github.com/PhenoML/phenostore-sdk-go/commit/14145c019e638c6538185549c13232ca5afb5445))
+
 ## [0.0.2](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.0.1...v0.0.2) (2026-02-27)
 
 
