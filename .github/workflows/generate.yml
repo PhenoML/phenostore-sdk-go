@@ -71,6 +71,15 @@ jobs:
       - name: Run tests
         run: go test -race -count=1 -timeout 5m ./...
 
+      - name: Generate commit message
+        if: github.event_name == 'repository_dispatch'
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          prompt_file: .github/prompts/generate-commit-message.md
+          allowed_tools: "View,GlobTool,GrepTool,Bash(git:*),Write"
+          max_turns: "5"
+          anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
+
       - name: Create pull request
         if: github.event_name == 'repository_dispatch'
         env:
@@ -89,7 +98,9 @@ jobs:
 
           git add -A
 
-          if [[ -n "${PR_TITLE}" ]]; then
+          if [[ -f .commit-message ]]; then
+            COMMIT_TITLE=$(head -1 .commit-message)
+          elif [[ -n "${PR_TITLE}" ]]; then
             COMMIT_TITLE="feat: regenerate SDK — ${PR_TITLE}"
           else
             COMMIT_TITLE="feat: regenerate SDK from spec ${SPEC_SHA}"
