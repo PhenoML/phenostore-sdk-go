@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.2](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.0.1...v0.0.2) (2026-02-27)
+
+
+### Features
+
+* make tenant and store client-level parameters ([#5](https://github.com/PhenoML/phenostore-sdk-go/issues/5)) ([696d3d0](https://github.com/PhenoML/phenostore-sdk-go/commit/696d3d0e69bc3d06e5974b2abb1a608cc83f799c))
+
 ## 0.0.1 (2026-02-26)
 
 
