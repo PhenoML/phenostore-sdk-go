@@ -8,7 +8,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  # id-token: write  # uncomment for AWS Bedrock or Google Vertex AI OIDC auth
 
 jobs:
   regenerate:
@@ -54,7 +53,6 @@ jobs:
           prompt_file: .github/prompts/adapt-to-generated-changes.md
           allowed_tools: "View,Edit,Write,GlobTool,GrepTool,Bash(go:*)"
           max_turns: "15"
-          # Auth option 1: Anthropic API key (simplest — store as repo secret)
           anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
 
       - name: Verify compilation
