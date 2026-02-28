@@ -2,9 +2,8 @@ Review the changes on this branch to write an appropriate conventional commit
 message for this SDK regeneration.
 
 Run `git diff HEAD` to see all changes (spec update, generated code, and any
-wrapper adaptations are all uncommitted). Focus on the generated and wrapper
-changes, not the spec diff itself. The upstream PR title is provided above —
-use it as context for understanding the intent of the changes.
+wrapper adaptations are all uncommitted). The upstream PR title is provided
+above — use it as context for understanding the intent of the changes.
 
 Based on the nature of the changes, write a single conventional commit line
 to `.commit-message`.
