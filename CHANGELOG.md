@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.0](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.0.3...v0.1.0) (2026-02-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* consolidate resource type params into shared ResourceType enum ([#17](https://github.com/PhenoML/phenostore-sdk-go/issues/17))
+
+### Features
+
+* accept pr_title in generate workflow ([#10](https://github.com/PhenoML/phenostore-sdk-go/issues/10)) ([908aafc](https://github.com/PhenoML/phenostore-sdk-go/commit/908aafc5b78177dda016e109ad42364345970e53))
+* consolidate resource type params into shared ResourceType enum ([#17](https://github.com/PhenoML/phenostore-sdk-go/issues/17)) ([129a93b](https://github.com/PhenoML/phenostore-sdk-go/commit/129a93b493b108f62270c148df12952808aba972))
+
 ## [0.0.3](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.0.2...v0.0.3) (2026-02-27)
 
 
