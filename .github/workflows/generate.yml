@@ -69,7 +69,7 @@ jobs:
             The upstream PR title is: ${{ github.event.client_payload.pr_title }}
 
             Read and follow the instructions in .github/prompts/generate-commit-message.md
-          claude_args: '--model sonnet --allowedTools "View,GlobTool,GrepTool,Bash(git diff:*),Bash(printenv:*),Write"'
+          claude_args: '--model sonnet --allowedTools "View,GlobTool,GrepTool,Bash(git diff:*),Write"'
           anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
 
       - name: Create pull request

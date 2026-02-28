@@ -2,9 +2,8 @@ Review the changes on this branch to write an appropriate conventional commit
 message for this SDK regeneration.
 
 Run `git diff HEAD` to see the generated and wrapper changes (the spec update
-is already committed). The `PR_TITLE` environment variable contains the
-upstream PR title — use it as context for understanding the intent of
-the changes.
+is already committed). The upstream PR title is provided above — use it as
+context for understanding the intent of the changes.
 
 Based on the nature of the changes, write a single conventional commit line
 to `.commit-message`.
