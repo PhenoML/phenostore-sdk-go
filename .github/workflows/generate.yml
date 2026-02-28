@@ -92,7 +92,7 @@ jobs:
 
           git add -A
           git commit -m "${COMMIT_TITLE}"
-          git push -u --force-with-lease origin "$BRANCH"
+          git push -u --force origin "$BRANCH"
 
           gh pr create \
             --base main \
