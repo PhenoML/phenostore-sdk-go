@@ -89,10 +89,11 @@ jobs:
             exit 0
           fi
 
-          if [[ -f .commit-message ]]; then
+          if [[ -f .commit-message ]] && [[ -s .commit-message ]]; then
             COMMIT_TITLE=$(head -1 .commit-message)
             rm .commit-message
-          elif [[ -n "${PR_TITLE}" ]]; then
+          fi
+          if [[ -z "${COMMIT_TITLE}" ]] && [[ -n "${PR_TITLE}" ]]; then
             COMMIT_TITLE="feat: regenerate SDK — ${PR_TITLE}"
           else
             COMMIT_TITLE="feat: regenerate SDK from spec ${SPEC_SHA}"
