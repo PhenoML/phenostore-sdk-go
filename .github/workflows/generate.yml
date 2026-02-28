@@ -67,7 +67,7 @@ jobs:
         uses: anthropics/claude-code-base-action@beta
         with:
           prompt_file: .github/prompts/generate-commit-message.md
-          allowed_tools: "View,GlobTool,GrepTool,Bash(git:*),Bash(printenv:*),Write"
+          allowed_tools: "View,GlobTool,GrepTool,Bash(git diff:*),Bash(printenv:*),Write"
           max_turns: "5"
           anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
           claude_env: |
