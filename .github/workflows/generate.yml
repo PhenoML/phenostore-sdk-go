@@ -19,10 +19,7 @@ jobs:
         with:
           go-version-file: go.mod
 
-      # Commit the spec to a branch first so that if later steps fail,
-      # the workflow can be retried via workflow_dispatch on this branch
-      # without needing to re-dispatch from the upstream repo.
-      - name: Commit spec from dispatch payload
+      - name: Prepare workspace from dispatch payload
         if: github.event_name == 'repository_dispatch'
         env:
           SPEC_B64: ${{ github.event.client_payload.spec_b64 }}
@@ -32,9 +29,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git checkout -b "sdk-regen/${SPEC_SHA}"
-          git add api/openapi.yaml
-          git commit -m "chore: update OpenAPI spec to ${SPEC_SHA}"
-          git push -u origin "sdk-regen/${SPEC_SHA}"
 
       - name: Regenerate client
         run: go generate ./phenostore/
@@ -84,12 +78,6 @@ jobs:
         run: |
           BRANCH="sdk-regen/${SPEC_SHA}"
 
-          # Check if there are generated/wrapper changes to commit
-          if git diff --quiet; then
-            echo "No changes beyond the spec update"
-            exit 0
-          fi
-
           if [[ -f .commit-message ]] && [[ -s .commit-message ]]; then
             COMMIT_TITLE=$(head -1 .commit-message)
             rm .commit-message
@@ -104,7 +92,7 @@ jobs:
 
           git add -A
           git commit -m "${COMMIT_TITLE}"
-          git push
+          git push -u --force-with-lease origin "$BRANCH"
 
           gh pr create \
             --base main \
