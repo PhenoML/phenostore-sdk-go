@@ -52,7 +52,7 @@ jobs:
         with:
           prompt_file: .github/prompts/adapt-to-generated-changes.md
           allowed_tools: "View,Edit,Write,GlobTool,GrepTool,Bash(go:*)"
-          max_turns: "15"
+          max_turns: "30"
           anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
 
       - name: Verify compilation
