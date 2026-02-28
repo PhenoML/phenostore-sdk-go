@@ -566,11 +566,9 @@ paths:
                 _cursor:
                   type: string
                 _total:
-                  type: string
-                  enum: [none, estimate, accurate]
+                  $ref: "#/components/schemas/SearchTotalMode"
                 _summary:
-                  type: string
-                  enum: ["true", "false", text, count, data]
+                  $ref: "#/components/schemas/SearchSummaryMode"
                 _elements:
                   type: string
                 _sort:
@@ -940,48 +938,7 @@ components:
       in: path
       required: true
       schema:
-        type: string
-        enum:
-          - AllergyIntolerance
-          - Appointment
-          - CarePlan
-          - CareTeam
-          - Claim
-          - Communication
-          - Condition
-          - Consent
-          - Coverage
-          - Device
-          - DiagnosticReport
-          - DocumentReference
-          - Encounter
-          - ExplanationOfBenefit
-          - FamilyMemberHistory
-          - Goal
-          - HealthcareService
-          - Immunization
-          - Location
-          - Medication
-          - MedicationAdministration
-          - MedicationDispense
-          - MedicationRequest
-          - MedicationStatement
-          - Observation
-          - Organization
-          - Patient
-          - Practitioner
-          - PractitionerRole
-          - Procedure
-          - Provenance
-          - Questionnaire
-          - QuestionnaireResponse
-          - RelatedPerson
-          - Schedule
-          - ServiceRequest
-          - Slot
-          - Specimen
-          - Subscription
-          - Task
+        $ref: "#/components/schemas/ResourceType"
       description: FHIR resource type
     fhirId:
       name: id
@@ -1017,15 +974,13 @@ components:
       name: _total
       in: query
       schema:
-        type: string
-        enum: [none, estimate, accurate]
+        $ref: "#/components/schemas/SearchTotalMode"
       description: Controls whether total count is included in results
     searchSummary:
       name: _summary
       in: query
       schema:
-        type: string
-        enum: ["true", "false", text, count, data]
+        $ref: "#/components/schemas/SearchSummaryMode"
       description: Response summary mode
     searchElements:
       name: _elements
@@ -1074,6 +1029,85 @@ components:
         format: date-time
 
   schemas:
+    ResourceType:
+      type: string
+      description: FHIR resource type
+      enum:
+        - AllergyIntolerance
+        - Appointment
+        - CarePlan
+        - CareTeam
+        - Claim
+        - Communication
+        - Condition
+        - Consent
+        - Coverage
+        - Device
+        - DiagnosticReport
+        - DocumentReference
+        - Encounter
+        - ExplanationOfBenefit
+        - FamilyMemberHistory
+        - Goal
+        - HealthcareService
+        - Immunization
+        - Location
+        - Medication
+        - MedicationAdministration
+        - MedicationDispense
+        - MedicationRequest
+        - MedicationStatement
+        - Observation
+        - Organization
+        - Patient
+        - Practitioner
+        - PractitionerRole
+        - Procedure
+        - Provenance
+        - Questionnaire
+        - QuestionnaireResponse
+        - RelatedPerson
+        - Schedule
+        - ServiceRequest
+        - Slot
+        - Specimen
+        - Subscription
+        - Task
+
+    BundleType:
+      type: string
+      description: FHIR Bundle type
+      enum:
+        - searchset
+        - history
+        - transaction-response
+        - batch-response
+
+    IssueSeverity:
+      type: string
+      description: FHIR OperationOutcome issue severity
+      enum: [fatal, error, warning, information]
+
+    SearchTotalMode:
+      type: string
+      description: Controls whether total count is included in search results
+      enum: [none, estimate, accurate]
+
+    SearchSummaryMode:
+      type: string
+      description: Search response summary mode
+      enum: ["true", "false", text, count, data]
+
+    BulkOperationStatusCode:
+      type: string
+      description: Bulk operation lifecycle status
+      enum: [pending, processing, completed, failed]
+
+    JsonPatchOp:
+      type: string
+      description: JSON Patch operation type (RFC 6902)
+      enum: [add, remove, replace, move, copy, test]
+
     FhirResource:
       type: object
       additionalProperties: true
@@ -1097,8 +1131,7 @@ components:
       required: [severity, code]
       properties:
         severity:
-          type: string
-          enum: [fatal, error, warning, information]
+          $ref: "#/components/schemas/IssueSeverity"
         code:
           type: string
           description: FHIR issue type code
@@ -1117,12 +1150,7 @@ components:
           type: string
           enum: [Bundle]
         type:
-          type: string
-          enum:
-            - searchset
-            - history
-            - transaction-response
-            - batch-response
+          $ref: "#/components/schemas/BundleType"
         total:
           type: integer
         link:
@@ -1152,32 +1180,41 @@ components:
           description: The resource content (arbitrary FHIR resource JSON).
           x-go-type: RawJSON
         search:
-          type: object
-          properties:
-            mode:
-              type: string
-              enum: [match, include]
+          $ref: "#/components/schemas/BundleEntrySearch"
         request:
-          type: object
-          properties:
-            method:
-              type: string
-            url:
-              type: string
+          $ref: "#/components/schemas/BundleEntryRequest"
         response:
-          type: object
-          properties:
-            status:
-              type: string
-            location:
-              type: string
-            etag:
-              type: string
-            lastModified:
-              type: string
-            outcome:
-              description: OperationOutcome for this entry (arbitrary JSON).
-              x-go-type: RawJSON
+          $ref: "#/components/schemas/BundleEntryResponse"
+
+    BundleEntrySearch:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [match, include]
+
+    BundleEntryRequest:
+      type: object
+      properties:
+        method:
+          type: string
+        url:
+          type: string
+
+    BundleEntryResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        location:
+          type: string
+        etag:
+          type: string
+        lastModified:
+          type: string
+        outcome:
+          description: OperationOutcome for this entry (arbitrary JSON).
+          x-go-type: RawJSON
 
     HealthResponse:
       type: object
@@ -1254,8 +1291,7 @@ components:
         id:
           type: string
         status:
-          type: string
-          enum: [pending, processing, completed, failed]
+          $ref: "#/components/schemas/BulkOperationStatusCode"
         total_count:
           type: integer
         processed_count:
@@ -1280,8 +1316,7 @@ components:
         required: [op, path]
         properties:
           op:
-            type: string
-            enum: [add, remove, replace, move, copy, test]
+            $ref: "#/components/schemas/JsonPatchOp"
           path:
             type: string
           value: {}
