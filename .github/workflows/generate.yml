@@ -93,10 +93,12 @@ jobs:
             COMMIT_TITLE=$(head -1 .commit-message)
             rm .commit-message
           fi
-          if [[ -z "${COMMIT_TITLE}" ]] && [[ -n "${PR_TITLE}" ]]; then
-            COMMIT_TITLE="feat: regenerate SDK — ${PR_TITLE}"
-          else
-            COMMIT_TITLE="feat: regenerate SDK from spec ${SPEC_SHA}"
+          if [[ -z "${COMMIT_TITLE}" ]]; then
+            if [[ -n "${PR_TITLE}" ]]; then
+              COMMIT_TITLE="feat: regenerate SDK — ${PR_TITLE}"
+            else
+              COMMIT_TITLE="feat: regenerate SDK from spec ${SPEC_SHA}"
+            fi
           fi
 
           git add -A
