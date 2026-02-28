@@ -53,6 +53,7 @@ jobs:
           prompt: "Read and follow the instructions in .github/prompts/adapt-to-generated-changes.md"
           claude_args: "--model opus --allowedTools View,Edit,Write,GlobTool,GrepTool,Bash(go:*)"
           anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify compilation
         run: go build ./...
@@ -71,6 +72,7 @@ jobs:
             Read and follow the instructions in .github/prompts/generate-commit-message.md
           claude_args: '--model sonnet --allowedTools "View,GlobTool,GrepTool,Bash(git diff:*),Write"'
           anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create pull request
         if: github.event_name == 'repository_dispatch'
