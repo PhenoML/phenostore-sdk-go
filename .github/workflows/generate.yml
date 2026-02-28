@@ -19,21 +19,59 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - name: Update spec from dispatch payload
+      # Commit the spec to a branch first so that if later steps fail,
+      # the workflow can be retried via workflow_dispatch on this branch
+      # without needing to re-dispatch from the upstream repo.
+      - name: Commit spec from dispatch payload
         if: github.event_name == 'repository_dispatch'
         env:
           SPEC_B64: ${{ github.event.client_payload.spec_b64 }}
+          SPEC_SHA: ${{ github.event.client_payload.spec_sha }}
         run: |
           echo "$SPEC_B64" | base64 -d > api/openapi.yaml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "sdk-regen/${SPEC_SHA}"
+          git add api/openapi.yaml
+          git commit -m "chore: update OpenAPI spec to ${SPEC_SHA}"
+          git push -u origin "sdk-regen/${SPEC_SHA}"
 
       - name: Regenerate client
         run: go generate ./phenostore/
+
+      - name: Check if build passes after regeneration
+        id: try-build
+        continue-on-error: true
+        run: go build ./...
+
+      # If the spec introduced breaking type changes, use Claude Code to
+      # adapt the hand-written wrapper (client.go, errors.go, examples/).
+      - name: Adapt wrapper to generated changes
+        if: steps.try-build.outcome == 'failure'
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          prompt_file: .github/prompts/adapt-to-generated-changes.md
+          allowed_tools: "View,Edit,Write,GlobTool,GrepTool,Bash(go:*)"
+          max_turns: "15"
+          anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
 
       - name: Verify compilation
         run: go build ./...
 
       - name: Run tests
         run: go test -race -count=1 -timeout 5m ./...
+
+      - name: Generate commit message
+        if: github.event_name == 'repository_dispatch'
+        continue-on-error: true
+        uses: anthropics/claude-code-base-action@beta
+        with:
+          prompt_file: .github/prompts/generate-commit-message.md
+          allowed_tools: "View,GlobTool,GrepTool,Bash(git diff:*),Bash(printenv:*),Write"
+          max_turns: "5"
+          anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
+          claude_env: |
+            PR_TITLE: ${{ github.event.client_payload.pr_title }}
 
       - name: Create pull request
         if: github.event_name == 'repository_dispatch'
@@ -45,25 +83,27 @@ jobs:
         run: |
           BRANCH="sdk-regen/${SPEC_SHA}"
 
-          # Check if there are actual changes to commit
+          # Check if there are generated/wrapper changes to commit
           if git diff --quiet; then
-            echo "No changes to commit"
+            echo "No changes beyond the spec update"
             exit 0
           fi
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$BRANCH"
-          git add -A
-
-          if [[ -n "${PR_TITLE}" ]]; then
-            COMMIT_TITLE="feat: regenerate SDK — ${PR_TITLE}"
-          else
-            COMMIT_TITLE="feat: regenerate SDK from spec ${SPEC_SHA}"
+          if [[ -f .commit-message ]] && [[ -s .commit-message ]]; then
+            COMMIT_TITLE=$(head -1 .commit-message)
+            rm .commit-message
+          fi
+          if [[ -z "${COMMIT_TITLE}" ]]; then
+            if [[ -n "${PR_TITLE}" ]]; then
+              COMMIT_TITLE="feat: regenerate SDK — ${PR_TITLE}"
+            else
+              COMMIT_TITLE="feat: regenerate SDK from spec ${SPEC_SHA}"
+            fi
           fi
 
+          git add -A
           git commit -m "${COMMIT_TITLE}"
-          git push -u origin "$BRANCH"
+          git push
 
           gh pr create \
             --base main \
