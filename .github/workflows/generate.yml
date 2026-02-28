@@ -48,11 +48,10 @@ jobs:
       # adapt the hand-written wrapper (client.go, errors.go, examples/).
       - name: Adapt wrapper to generated changes
         if: steps.try-build.outcome == 'failure'
-        uses: anthropics/claude-code-base-action@beta
+        uses: anthropics/claude-code-action@v1
         with:
-          prompt_file: .github/prompts/adapt-to-generated-changes.md
-          allowed_tools: "View,Edit,Write,GlobTool,GrepTool,Bash(go:*)"
-          max_turns: "30"
+          prompt: "Read and follow the instructions in .github/prompts/adapt-to-generated-changes.md"
+          claude_args: "--model opus --allowedTools View,Edit,Write,GlobTool,GrepTool,Bash(go:*)"
           anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
 
       - name: Verify compilation
@@ -64,14 +63,13 @@ jobs:
       - name: Generate commit message
         if: github.event_name == 'repository_dispatch'
         continue-on-error: true
-        uses: anthropics/claude-code-base-action@beta
+        uses: anthropics/claude-code-action@v1
+        env:
+          PR_TITLE: ${{ github.event.client_payload.pr_title }}
         with:
-          prompt_file: .github/prompts/generate-commit-message.md
-          allowed_tools: "View,GlobTool,GrepTool,Bash(git diff:*),Bash(printenv:*),Write"
-          max_turns: "5"
+          prompt: "Read and follow the instructions in .github/prompts/generate-commit-message.md"
+          claude_args: "--model sonnet --allowedTools View,GlobTool,GrepTool,Bash(git diff:*),Bash(printenv:*),Write"
           anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
-          claude_env: |
-            PR_TITLE: ${{ github.event.client_payload.pr_title }}
 
       - name: Create pull request
         if: github.event_name == 'repository_dispatch'
