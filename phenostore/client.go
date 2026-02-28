@@ -91,7 +91,7 @@ func (c *Client) Inner() *gen.ClientWithResponses {
 
 // ReadResource retrieves a single FHIR resource by type and ID.
 func (c *Client) ReadResource(ctx context.Context, resourceType, id string) (json.RawMessage, error) {
-	resp, err := c.inner.ReadResourceWithResponse(ctx, c.tenant, c.store, gen.ReadResourceParamsResourceType(resourceType), id)
+	resp, err := c.inner.ReadResourceWithResponse(ctx, c.tenant, c.store, gen.ResourceType(resourceType), id)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +104,7 @@ func (c *Client) ReadResource(ctx context.Context, resourceType, id string) (jso
 // CreateResource creates a new FHIR resource. Returns the created resource.
 // Handles both 200 (conditional create, already exists) and 201 (created).
 func (c *Client) CreateResource(ctx context.Context, resourceType string, body json.RawMessage, params *gen.CreateResourceParams) (json.RawMessage, error) {
-	resp, err := c.inner.CreateResourceWithResponse(ctx, c.tenant, c.store, gen.CreateResourceParamsResourceType(resourceType), params, body)
+	resp, err := c.inner.CreateResourceWithResponse(ctx, c.tenant, c.store, gen.ResourceType(resourceType), params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +117,7 @@ func (c *Client) CreateResource(ctx context.Context, resourceType string, body j
 // UpdateResource updates an existing FHIR resource, or creates it (upsert).
 // Handles both 200 (updated) and 201 (created via upsert).
 func (c *Client) UpdateResource(ctx context.Context, resourceType, id string, body json.RawMessage, params *gen.UpdateResourceParams) (json.RawMessage, error) {
-	resp, err := c.inner.UpdateResourceWithResponse(ctx, c.tenant, c.store, gen.UpdateResourceParamsResourceType(resourceType), id, params, body)
+	resp, err := c.inner.UpdateResourceWithResponse(ctx, c.tenant, c.store, gen.ResourceType(resourceType), id, params, body)
 	if err != nil {
 		return nil, err
 	}
@@ -129,7 +129,7 @@ func (c *Client) UpdateResource(ctx context.Context, resourceType, id string, bo
 
 // DeleteResource deletes a FHIR resource.
 func (c *Client) DeleteResource(ctx context.Context, resourceType, id string) error {
-	resp, err := c.inner.DeleteResourceWithResponse(ctx, c.tenant, c.store, gen.DeleteResourceParamsResourceType(resourceType), id)
+	resp, err := c.inner.DeleteResourceWithResponse(ctx, c.tenant, c.store, gen.ResourceType(resourceType), id)
 	if err != nil {
 		return err
 	}
@@ -141,7 +141,7 @@ func (c *Client) DeleteResource(ctx context.Context, resourceType, id string) er
 
 // SearchResources searches for FHIR resources matching the given parameters.
 func (c *Client) SearchResources(ctx context.Context, resourceType string, params *gen.SearchResourcesParams) (*gen.Bundle, error) {
-	resp, err := c.inner.SearchResourcesWithResponse(ctx, c.tenant, c.store, gen.SearchResourcesParamsResourceType(resourceType), params)
+	resp, err := c.inner.SearchResourcesWithResponse(ctx, c.tenant, c.store, gen.ResourceType(resourceType), params)
 	if err != nil {
 		return nil, err
 	}

@@ -27,17 +27,23 @@ const (
 	BulkOperationAcceptedStatusPending BulkOperationAcceptedStatus = "pending"
 )
 
-// Defines values for BulkOperationStatusStatus.
+// Defines values for BulkOperationStatusCode.
 const (
-	BulkOperationStatusStatusCompleted  BulkOperationStatusStatus = "completed"
-	BulkOperationStatusStatusFailed     BulkOperationStatusStatus = "failed"
-	BulkOperationStatusStatusPending    BulkOperationStatusStatus = "pending"
-	BulkOperationStatusStatusProcessing BulkOperationStatusStatus = "processing"
+	BulkOperationStatusCodeCompleted  BulkOperationStatusCode = "completed"
+	BulkOperationStatusCodeFailed     BulkOperationStatusCode = "failed"
+	BulkOperationStatusCodePending    BulkOperationStatusCode = "pending"
+	BulkOperationStatusCodeProcessing BulkOperationStatusCode = "processing"
 )
 
 // Defines values for BundleResourceType.
 const (
 	BundleResourceTypeBundle BundleResourceType = "Bundle"
+)
+
+// Defines values for BundleEntrySearchMode.
+const (
+	Include BundleEntrySearchMode = "include"
+	Match   BundleEntrySearchMode = "match"
 )
 
 // Defines values for BundleType.
@@ -48,15 +54,17 @@ const (
 	TransactionResponse BundleType = "transaction-response"
 )
 
-// Defines values for BundleEntrySearchMode.
-const (
-	Include BundleEntrySearchMode = "include"
-	Match   BundleEntrySearchMode = "match"
-)
-
 // Defines values for HealthResponseStatus.
 const (
 	Ok HealthResponseStatus = "ok"
+)
+
+// Defines values for IssueSeverity.
+const (
+	Error       IssueSeverity = "error"
+	Fatal       IssueSeverity = "fatal"
+	Information IssueSeverity = "information"
+	Warning     IssueSeverity = "warning"
 )
 
 // Defines values for JsonPatchOp.
@@ -74,12 +82,64 @@ const (
 	OperationOutcomeResourceTypeOperationOutcome OperationOutcomeResourceType = "OperationOutcome"
 )
 
-// Defines values for OperationOutcomeIssueSeverity.
+// Defines values for ResourceType.
 const (
-	Error       OperationOutcomeIssueSeverity = "error"
-	Fatal       OperationOutcomeIssueSeverity = "fatal"
-	Information OperationOutcomeIssueSeverity = "information"
-	Warning     OperationOutcomeIssueSeverity = "warning"
+	AllergyIntolerance       ResourceType = "AllergyIntolerance"
+	Appointment              ResourceType = "Appointment"
+	CarePlan                 ResourceType = "CarePlan"
+	CareTeam                 ResourceType = "CareTeam"
+	Claim                    ResourceType = "Claim"
+	Communication            ResourceType = "Communication"
+	Condition                ResourceType = "Condition"
+	Consent                  ResourceType = "Consent"
+	Coverage                 ResourceType = "Coverage"
+	Device                   ResourceType = "Device"
+	DiagnosticReport         ResourceType = "DiagnosticReport"
+	DocumentReference        ResourceType = "DocumentReference"
+	Encounter                ResourceType = "Encounter"
+	ExplanationOfBenefit     ResourceType = "ExplanationOfBenefit"
+	FamilyMemberHistory      ResourceType = "FamilyMemberHistory"
+	Goal                     ResourceType = "Goal"
+	HealthcareService        ResourceType = "HealthcareService"
+	Immunization             ResourceType = "Immunization"
+	Location                 ResourceType = "Location"
+	Medication               ResourceType = "Medication"
+	MedicationAdministration ResourceType = "MedicationAdministration"
+	MedicationDispense       ResourceType = "MedicationDispense"
+	MedicationRequest        ResourceType = "MedicationRequest"
+	MedicationStatement      ResourceType = "MedicationStatement"
+	Observation              ResourceType = "Observation"
+	Organization             ResourceType = "Organization"
+	Patient                  ResourceType = "Patient"
+	Practitioner             ResourceType = "Practitioner"
+	PractitionerRole         ResourceType = "PractitionerRole"
+	Procedure                ResourceType = "Procedure"
+	Provenance               ResourceType = "Provenance"
+	Questionnaire            ResourceType = "Questionnaire"
+	QuestionnaireResponse    ResourceType = "QuestionnaireResponse"
+	RelatedPerson            ResourceType = "RelatedPerson"
+	Schedule                 ResourceType = "Schedule"
+	ServiceRequest           ResourceType = "ServiceRequest"
+	Slot                     ResourceType = "Slot"
+	Specimen                 ResourceType = "Specimen"
+	Subscription             ResourceType = "Subscription"
+	Task                     ResourceType = "Task"
+)
+
+// Defines values for SearchSummaryMode.
+const (
+	Count SearchSummaryMode = "count"
+	Data  SearchSummaryMode = "data"
+	False SearchSummaryMode = "false"
+	Text  SearchSummaryMode = "text"
+	True  SearchSummaryMode = "true"
+)
+
+// Defines values for SearchTotalMode.
+const (
+	Accurate SearchTotalMode = "accurate"
+	Estimate SearchTotalMode = "estimate"
+	None     SearchTotalMode = "none"
 )
 
 // Defines values for TokenResponseTokenType.
@@ -87,585 +147,9 @@ const (
 	Bearer TokenResponseTokenType = "Bearer"
 )
 
-// Defines values for ResourceType.
-const (
-	ResourceTypeAllergyIntolerance       ResourceType = "AllergyIntolerance"
-	ResourceTypeAppointment              ResourceType = "Appointment"
-	ResourceTypeCarePlan                 ResourceType = "CarePlan"
-	ResourceTypeCareTeam                 ResourceType = "CareTeam"
-	ResourceTypeClaim                    ResourceType = "Claim"
-	ResourceTypeCommunication            ResourceType = "Communication"
-	ResourceTypeCondition                ResourceType = "Condition"
-	ResourceTypeConsent                  ResourceType = "Consent"
-	ResourceTypeCoverage                 ResourceType = "Coverage"
-	ResourceTypeDevice                   ResourceType = "Device"
-	ResourceTypeDiagnosticReport         ResourceType = "DiagnosticReport"
-	ResourceTypeDocumentReference        ResourceType = "DocumentReference"
-	ResourceTypeEncounter                ResourceType = "Encounter"
-	ResourceTypeExplanationOfBenefit     ResourceType = "ExplanationOfBenefit"
-	ResourceTypeFamilyMemberHistory      ResourceType = "FamilyMemberHistory"
-	ResourceTypeGoal                     ResourceType = "Goal"
-	ResourceTypeHealthcareService        ResourceType = "HealthcareService"
-	ResourceTypeImmunization             ResourceType = "Immunization"
-	ResourceTypeLocation                 ResourceType = "Location"
-	ResourceTypeMedication               ResourceType = "Medication"
-	ResourceTypeMedicationAdministration ResourceType = "MedicationAdministration"
-	ResourceTypeMedicationDispense       ResourceType = "MedicationDispense"
-	ResourceTypeMedicationRequest        ResourceType = "MedicationRequest"
-	ResourceTypeMedicationStatement      ResourceType = "MedicationStatement"
-	ResourceTypeObservation              ResourceType = "Observation"
-	ResourceTypeOrganization             ResourceType = "Organization"
-	ResourceTypePatient                  ResourceType = "Patient"
-	ResourceTypePractitioner             ResourceType = "Practitioner"
-	ResourceTypePractitionerRole         ResourceType = "PractitionerRole"
-	ResourceTypeProcedure                ResourceType = "Procedure"
-	ResourceTypeProvenance               ResourceType = "Provenance"
-	ResourceTypeQuestionnaire            ResourceType = "Questionnaire"
-	ResourceTypeQuestionnaireResponse    ResourceType = "QuestionnaireResponse"
-	ResourceTypeRelatedPerson            ResourceType = "RelatedPerson"
-	ResourceTypeSchedule                 ResourceType = "Schedule"
-	ResourceTypeServiceRequest           ResourceType = "ServiceRequest"
-	ResourceTypeSlot                     ResourceType = "Slot"
-	ResourceTypeSpecimen                 ResourceType = "Specimen"
-	ResourceTypeSubscription             ResourceType = "Subscription"
-	ResourceTypeTask                     ResourceType = "Task"
-)
-
-// Defines values for SearchSummary.
-const (
-	SearchSummaryCount SearchSummary = "count"
-	SearchSummaryData  SearchSummary = "data"
-	SearchSummaryFalse SearchSummary = "false"
-	SearchSummaryText  SearchSummary = "text"
-	SearchSummaryTrue  SearchSummary = "true"
-)
-
-// Defines values for SearchTotal.
-const (
-	SearchTotalAccurate SearchTotal = "accurate"
-	SearchTotalEstimate SearchTotal = "estimate"
-	SearchTotalNone     SearchTotal = "none"
-)
-
 // Defines values for IssueTokenFormdataBodyGrantType.
 const (
 	ClientCredentials IssueTokenFormdataBodyGrantType = "client_credentials"
-)
-
-// Defines values for ConditionalDeleteResourceParamsResourceType.
-const (
-	ConditionalDeleteResourceParamsResourceTypeAllergyIntolerance       ConditionalDeleteResourceParamsResourceType = "AllergyIntolerance"
-	ConditionalDeleteResourceParamsResourceTypeAppointment              ConditionalDeleteResourceParamsResourceType = "Appointment"
-	ConditionalDeleteResourceParamsResourceTypeCarePlan                 ConditionalDeleteResourceParamsResourceType = "CarePlan"
-	ConditionalDeleteResourceParamsResourceTypeCareTeam                 ConditionalDeleteResourceParamsResourceType = "CareTeam"
-	ConditionalDeleteResourceParamsResourceTypeClaim                    ConditionalDeleteResourceParamsResourceType = "Claim"
-	ConditionalDeleteResourceParamsResourceTypeCommunication            ConditionalDeleteResourceParamsResourceType = "Communication"
-	ConditionalDeleteResourceParamsResourceTypeCondition                ConditionalDeleteResourceParamsResourceType = "Condition"
-	ConditionalDeleteResourceParamsResourceTypeConsent                  ConditionalDeleteResourceParamsResourceType = "Consent"
-	ConditionalDeleteResourceParamsResourceTypeCoverage                 ConditionalDeleteResourceParamsResourceType = "Coverage"
-	ConditionalDeleteResourceParamsResourceTypeDevice                   ConditionalDeleteResourceParamsResourceType = "Device"
-	ConditionalDeleteResourceParamsResourceTypeDiagnosticReport         ConditionalDeleteResourceParamsResourceType = "DiagnosticReport"
-	ConditionalDeleteResourceParamsResourceTypeDocumentReference        ConditionalDeleteResourceParamsResourceType = "DocumentReference"
-	ConditionalDeleteResourceParamsResourceTypeEncounter                ConditionalDeleteResourceParamsResourceType = "Encounter"
-	ConditionalDeleteResourceParamsResourceTypeExplanationOfBenefit     ConditionalDeleteResourceParamsResourceType = "ExplanationOfBenefit"
-	ConditionalDeleteResourceParamsResourceTypeFamilyMemberHistory      ConditionalDeleteResourceParamsResourceType = "FamilyMemberHistory"
-	ConditionalDeleteResourceParamsResourceTypeGoal                     ConditionalDeleteResourceParamsResourceType = "Goal"
-	ConditionalDeleteResourceParamsResourceTypeHealthcareService        ConditionalDeleteResourceParamsResourceType = "HealthcareService"
-	ConditionalDeleteResourceParamsResourceTypeImmunization             ConditionalDeleteResourceParamsResourceType = "Immunization"
-	ConditionalDeleteResourceParamsResourceTypeLocation                 ConditionalDeleteResourceParamsResourceType = "Location"
-	ConditionalDeleteResourceParamsResourceTypeMedication               ConditionalDeleteResourceParamsResourceType = "Medication"
-	ConditionalDeleteResourceParamsResourceTypeMedicationAdministration ConditionalDeleteResourceParamsResourceType = "MedicationAdministration"
-	ConditionalDeleteResourceParamsResourceTypeMedicationDispense       ConditionalDeleteResourceParamsResourceType = "MedicationDispense"
-	ConditionalDeleteResourceParamsResourceTypeMedicationRequest        ConditionalDeleteResourceParamsResourceType = "MedicationRequest"
-	ConditionalDeleteResourceParamsResourceTypeMedicationStatement      ConditionalDeleteResourceParamsResourceType = "MedicationStatement"
-	ConditionalDeleteResourceParamsResourceTypeObservation              ConditionalDeleteResourceParamsResourceType = "Observation"
-	ConditionalDeleteResourceParamsResourceTypeOrganization             ConditionalDeleteResourceParamsResourceType = "Organization"
-	ConditionalDeleteResourceParamsResourceTypePatient                  ConditionalDeleteResourceParamsResourceType = "Patient"
-	ConditionalDeleteResourceParamsResourceTypePractitioner             ConditionalDeleteResourceParamsResourceType = "Practitioner"
-	ConditionalDeleteResourceParamsResourceTypePractitionerRole         ConditionalDeleteResourceParamsResourceType = "PractitionerRole"
-	ConditionalDeleteResourceParamsResourceTypeProcedure                ConditionalDeleteResourceParamsResourceType = "Procedure"
-	ConditionalDeleteResourceParamsResourceTypeProvenance               ConditionalDeleteResourceParamsResourceType = "Provenance"
-	ConditionalDeleteResourceParamsResourceTypeQuestionnaire            ConditionalDeleteResourceParamsResourceType = "Questionnaire"
-	ConditionalDeleteResourceParamsResourceTypeQuestionnaireResponse    ConditionalDeleteResourceParamsResourceType = "QuestionnaireResponse"
-	ConditionalDeleteResourceParamsResourceTypeRelatedPerson            ConditionalDeleteResourceParamsResourceType = "RelatedPerson"
-	ConditionalDeleteResourceParamsResourceTypeSchedule                 ConditionalDeleteResourceParamsResourceType = "Schedule"
-	ConditionalDeleteResourceParamsResourceTypeServiceRequest           ConditionalDeleteResourceParamsResourceType = "ServiceRequest"
-	ConditionalDeleteResourceParamsResourceTypeSlot                     ConditionalDeleteResourceParamsResourceType = "Slot"
-	ConditionalDeleteResourceParamsResourceTypeSpecimen                 ConditionalDeleteResourceParamsResourceType = "Specimen"
-	ConditionalDeleteResourceParamsResourceTypeSubscription             ConditionalDeleteResourceParamsResourceType = "Subscription"
-	ConditionalDeleteResourceParamsResourceTypeTask                     ConditionalDeleteResourceParamsResourceType = "Task"
-)
-
-// Defines values for SearchResourcesParamsTotal.
-const (
-	SearchResourcesParamsTotalAccurate SearchResourcesParamsTotal = "accurate"
-	SearchResourcesParamsTotalEstimate SearchResourcesParamsTotal = "estimate"
-	SearchResourcesParamsTotalNone     SearchResourcesParamsTotal = "none"
-)
-
-// Defines values for SearchResourcesParamsSummary.
-const (
-	SearchResourcesParamsSummaryCount SearchResourcesParamsSummary = "count"
-	SearchResourcesParamsSummaryData  SearchResourcesParamsSummary = "data"
-	SearchResourcesParamsSummaryFalse SearchResourcesParamsSummary = "false"
-	SearchResourcesParamsSummaryText  SearchResourcesParamsSummary = "text"
-	SearchResourcesParamsSummaryTrue  SearchResourcesParamsSummary = "true"
-)
-
-// Defines values for SearchResourcesParamsResourceType.
-const (
-	SearchResourcesParamsResourceTypeAllergyIntolerance       SearchResourcesParamsResourceType = "AllergyIntolerance"
-	SearchResourcesParamsResourceTypeAppointment              SearchResourcesParamsResourceType = "Appointment"
-	SearchResourcesParamsResourceTypeCarePlan                 SearchResourcesParamsResourceType = "CarePlan"
-	SearchResourcesParamsResourceTypeCareTeam                 SearchResourcesParamsResourceType = "CareTeam"
-	SearchResourcesParamsResourceTypeClaim                    SearchResourcesParamsResourceType = "Claim"
-	SearchResourcesParamsResourceTypeCommunication            SearchResourcesParamsResourceType = "Communication"
-	SearchResourcesParamsResourceTypeCondition                SearchResourcesParamsResourceType = "Condition"
-	SearchResourcesParamsResourceTypeConsent                  SearchResourcesParamsResourceType = "Consent"
-	SearchResourcesParamsResourceTypeCoverage                 SearchResourcesParamsResourceType = "Coverage"
-	SearchResourcesParamsResourceTypeDevice                   SearchResourcesParamsResourceType = "Device"
-	SearchResourcesParamsResourceTypeDiagnosticReport         SearchResourcesParamsResourceType = "DiagnosticReport"
-	SearchResourcesParamsResourceTypeDocumentReference        SearchResourcesParamsResourceType = "DocumentReference"
-	SearchResourcesParamsResourceTypeEncounter                SearchResourcesParamsResourceType = "Encounter"
-	SearchResourcesParamsResourceTypeExplanationOfBenefit     SearchResourcesParamsResourceType = "ExplanationOfBenefit"
-	SearchResourcesParamsResourceTypeFamilyMemberHistory      SearchResourcesParamsResourceType = "FamilyMemberHistory"
-	SearchResourcesParamsResourceTypeGoal                     SearchResourcesParamsResourceType = "Goal"
-	SearchResourcesParamsResourceTypeHealthcareService        SearchResourcesParamsResourceType = "HealthcareService"
-	SearchResourcesParamsResourceTypeImmunization             SearchResourcesParamsResourceType = "Immunization"
-	SearchResourcesParamsResourceTypeLocation                 SearchResourcesParamsResourceType = "Location"
-	SearchResourcesParamsResourceTypeMedication               SearchResourcesParamsResourceType = "Medication"
-	SearchResourcesParamsResourceTypeMedicationAdministration SearchResourcesParamsResourceType = "MedicationAdministration"
-	SearchResourcesParamsResourceTypeMedicationDispense       SearchResourcesParamsResourceType = "MedicationDispense"
-	SearchResourcesParamsResourceTypeMedicationRequest        SearchResourcesParamsResourceType = "MedicationRequest"
-	SearchResourcesParamsResourceTypeMedicationStatement      SearchResourcesParamsResourceType = "MedicationStatement"
-	SearchResourcesParamsResourceTypeObservation              SearchResourcesParamsResourceType = "Observation"
-	SearchResourcesParamsResourceTypeOrganization             SearchResourcesParamsResourceType = "Organization"
-	SearchResourcesParamsResourceTypePatient                  SearchResourcesParamsResourceType = "Patient"
-	SearchResourcesParamsResourceTypePractitioner             SearchResourcesParamsResourceType = "Practitioner"
-	SearchResourcesParamsResourceTypePractitionerRole         SearchResourcesParamsResourceType = "PractitionerRole"
-	SearchResourcesParamsResourceTypeProcedure                SearchResourcesParamsResourceType = "Procedure"
-	SearchResourcesParamsResourceTypeProvenance               SearchResourcesParamsResourceType = "Provenance"
-	SearchResourcesParamsResourceTypeQuestionnaire            SearchResourcesParamsResourceType = "Questionnaire"
-	SearchResourcesParamsResourceTypeQuestionnaireResponse    SearchResourcesParamsResourceType = "QuestionnaireResponse"
-	SearchResourcesParamsResourceTypeRelatedPerson            SearchResourcesParamsResourceType = "RelatedPerson"
-	SearchResourcesParamsResourceTypeSchedule                 SearchResourcesParamsResourceType = "Schedule"
-	SearchResourcesParamsResourceTypeServiceRequest           SearchResourcesParamsResourceType = "ServiceRequest"
-	SearchResourcesParamsResourceTypeSlot                     SearchResourcesParamsResourceType = "Slot"
-	SearchResourcesParamsResourceTypeSpecimen                 SearchResourcesParamsResourceType = "Specimen"
-	SearchResourcesParamsResourceTypeSubscription             SearchResourcesParamsResourceType = "Subscription"
-	SearchResourcesParamsResourceTypeTask                     SearchResourcesParamsResourceType = "Task"
-)
-
-// Defines values for CreateResourceParamsResourceType.
-const (
-	CreateResourceParamsResourceTypeAllergyIntolerance       CreateResourceParamsResourceType = "AllergyIntolerance"
-	CreateResourceParamsResourceTypeAppointment              CreateResourceParamsResourceType = "Appointment"
-	CreateResourceParamsResourceTypeCarePlan                 CreateResourceParamsResourceType = "CarePlan"
-	CreateResourceParamsResourceTypeCareTeam                 CreateResourceParamsResourceType = "CareTeam"
-	CreateResourceParamsResourceTypeClaim                    CreateResourceParamsResourceType = "Claim"
-	CreateResourceParamsResourceTypeCommunication            CreateResourceParamsResourceType = "Communication"
-	CreateResourceParamsResourceTypeCondition                CreateResourceParamsResourceType = "Condition"
-	CreateResourceParamsResourceTypeConsent                  CreateResourceParamsResourceType = "Consent"
-	CreateResourceParamsResourceTypeCoverage                 CreateResourceParamsResourceType = "Coverage"
-	CreateResourceParamsResourceTypeDevice                   CreateResourceParamsResourceType = "Device"
-	CreateResourceParamsResourceTypeDiagnosticReport         CreateResourceParamsResourceType = "DiagnosticReport"
-	CreateResourceParamsResourceTypeDocumentReference        CreateResourceParamsResourceType = "DocumentReference"
-	CreateResourceParamsResourceTypeEncounter                CreateResourceParamsResourceType = "Encounter"
-	CreateResourceParamsResourceTypeExplanationOfBenefit     CreateResourceParamsResourceType = "ExplanationOfBenefit"
-	CreateResourceParamsResourceTypeFamilyMemberHistory      CreateResourceParamsResourceType = "FamilyMemberHistory"
-	CreateResourceParamsResourceTypeGoal                     CreateResourceParamsResourceType = "Goal"
-	CreateResourceParamsResourceTypeHealthcareService        CreateResourceParamsResourceType = "HealthcareService"
-	CreateResourceParamsResourceTypeImmunization             CreateResourceParamsResourceType = "Immunization"
-	CreateResourceParamsResourceTypeLocation                 CreateResourceParamsResourceType = "Location"
-	CreateResourceParamsResourceTypeMedication               CreateResourceParamsResourceType = "Medication"
-	CreateResourceParamsResourceTypeMedicationAdministration CreateResourceParamsResourceType = "MedicationAdministration"
-	CreateResourceParamsResourceTypeMedicationDispense       CreateResourceParamsResourceType = "MedicationDispense"
-	CreateResourceParamsResourceTypeMedicationRequest        CreateResourceParamsResourceType = "MedicationRequest"
-	CreateResourceParamsResourceTypeMedicationStatement      CreateResourceParamsResourceType = "MedicationStatement"
-	CreateResourceParamsResourceTypeObservation              CreateResourceParamsResourceType = "Observation"
-	CreateResourceParamsResourceTypeOrganization             CreateResourceParamsResourceType = "Organization"
-	CreateResourceParamsResourceTypePatient                  CreateResourceParamsResourceType = "Patient"
-	CreateResourceParamsResourceTypePractitioner             CreateResourceParamsResourceType = "Practitioner"
-	CreateResourceParamsResourceTypePractitionerRole         CreateResourceParamsResourceType = "PractitionerRole"
-	CreateResourceParamsResourceTypeProcedure                CreateResourceParamsResourceType = "Procedure"
-	CreateResourceParamsResourceTypeProvenance               CreateResourceParamsResourceType = "Provenance"
-	CreateResourceParamsResourceTypeQuestionnaire            CreateResourceParamsResourceType = "Questionnaire"
-	CreateResourceParamsResourceTypeQuestionnaireResponse    CreateResourceParamsResourceType = "QuestionnaireResponse"
-	CreateResourceParamsResourceTypeRelatedPerson            CreateResourceParamsResourceType = "RelatedPerson"
-	CreateResourceParamsResourceTypeSchedule                 CreateResourceParamsResourceType = "Schedule"
-	CreateResourceParamsResourceTypeServiceRequest           CreateResourceParamsResourceType = "ServiceRequest"
-	CreateResourceParamsResourceTypeSlot                     CreateResourceParamsResourceType = "Slot"
-	CreateResourceParamsResourceTypeSpecimen                 CreateResourceParamsResourceType = "Specimen"
-	CreateResourceParamsResourceTypeSubscription             CreateResourceParamsResourceType = "Subscription"
-	CreateResourceParamsResourceTypeTask                     CreateResourceParamsResourceType = "Task"
-)
-
-// Defines values for ValidateResourceParamsResourceType.
-const (
-	ValidateResourceParamsResourceTypeAllergyIntolerance       ValidateResourceParamsResourceType = "AllergyIntolerance"
-	ValidateResourceParamsResourceTypeAppointment              ValidateResourceParamsResourceType = "Appointment"
-	ValidateResourceParamsResourceTypeCarePlan                 ValidateResourceParamsResourceType = "CarePlan"
-	ValidateResourceParamsResourceTypeCareTeam                 ValidateResourceParamsResourceType = "CareTeam"
-	ValidateResourceParamsResourceTypeClaim                    ValidateResourceParamsResourceType = "Claim"
-	ValidateResourceParamsResourceTypeCommunication            ValidateResourceParamsResourceType = "Communication"
-	ValidateResourceParamsResourceTypeCondition                ValidateResourceParamsResourceType = "Condition"
-	ValidateResourceParamsResourceTypeConsent                  ValidateResourceParamsResourceType = "Consent"
-	ValidateResourceParamsResourceTypeCoverage                 ValidateResourceParamsResourceType = "Coverage"
-	ValidateResourceParamsResourceTypeDevice                   ValidateResourceParamsResourceType = "Device"
-	ValidateResourceParamsResourceTypeDiagnosticReport         ValidateResourceParamsResourceType = "DiagnosticReport"
-	ValidateResourceParamsResourceTypeDocumentReference        ValidateResourceParamsResourceType = "DocumentReference"
-	ValidateResourceParamsResourceTypeEncounter                ValidateResourceParamsResourceType = "Encounter"
-	ValidateResourceParamsResourceTypeExplanationOfBenefit     ValidateResourceParamsResourceType = "ExplanationOfBenefit"
-	ValidateResourceParamsResourceTypeFamilyMemberHistory      ValidateResourceParamsResourceType = "FamilyMemberHistory"
-	ValidateResourceParamsResourceTypeGoal                     ValidateResourceParamsResourceType = "Goal"
-	ValidateResourceParamsResourceTypeHealthcareService        ValidateResourceParamsResourceType = "HealthcareService"
-	ValidateResourceParamsResourceTypeImmunization             ValidateResourceParamsResourceType = "Immunization"
-	ValidateResourceParamsResourceTypeLocation                 ValidateResourceParamsResourceType = "Location"
-	ValidateResourceParamsResourceTypeMedication               ValidateResourceParamsResourceType = "Medication"
-	ValidateResourceParamsResourceTypeMedicationAdministration ValidateResourceParamsResourceType = "MedicationAdministration"
-	ValidateResourceParamsResourceTypeMedicationDispense       ValidateResourceParamsResourceType = "MedicationDispense"
-	ValidateResourceParamsResourceTypeMedicationRequest        ValidateResourceParamsResourceType = "MedicationRequest"
-	ValidateResourceParamsResourceTypeMedicationStatement      ValidateResourceParamsResourceType = "MedicationStatement"
-	ValidateResourceParamsResourceTypeObservation              ValidateResourceParamsResourceType = "Observation"
-	ValidateResourceParamsResourceTypeOrganization             ValidateResourceParamsResourceType = "Organization"
-	ValidateResourceParamsResourceTypePatient                  ValidateResourceParamsResourceType = "Patient"
-	ValidateResourceParamsResourceTypePractitioner             ValidateResourceParamsResourceType = "Practitioner"
-	ValidateResourceParamsResourceTypePractitionerRole         ValidateResourceParamsResourceType = "PractitionerRole"
-	ValidateResourceParamsResourceTypeProcedure                ValidateResourceParamsResourceType = "Procedure"
-	ValidateResourceParamsResourceTypeProvenance               ValidateResourceParamsResourceType = "Provenance"
-	ValidateResourceParamsResourceTypeQuestionnaire            ValidateResourceParamsResourceType = "Questionnaire"
-	ValidateResourceParamsResourceTypeQuestionnaireResponse    ValidateResourceParamsResourceType = "QuestionnaireResponse"
-	ValidateResourceParamsResourceTypeRelatedPerson            ValidateResourceParamsResourceType = "RelatedPerson"
-	ValidateResourceParamsResourceTypeSchedule                 ValidateResourceParamsResourceType = "Schedule"
-	ValidateResourceParamsResourceTypeServiceRequest           ValidateResourceParamsResourceType = "ServiceRequest"
-	ValidateResourceParamsResourceTypeSlot                     ValidateResourceParamsResourceType = "Slot"
-	ValidateResourceParamsResourceTypeSpecimen                 ValidateResourceParamsResourceType = "Specimen"
-	ValidateResourceParamsResourceTypeSubscription             ValidateResourceParamsResourceType = "Subscription"
-	ValidateResourceParamsResourceTypeTask                     ValidateResourceParamsResourceType = "Task"
-)
-
-// Defines values for SearchResourcesPostParamsResourceType.
-const (
-	SearchResourcesPostParamsResourceTypeAllergyIntolerance       SearchResourcesPostParamsResourceType = "AllergyIntolerance"
-	SearchResourcesPostParamsResourceTypeAppointment              SearchResourcesPostParamsResourceType = "Appointment"
-	SearchResourcesPostParamsResourceTypeCarePlan                 SearchResourcesPostParamsResourceType = "CarePlan"
-	SearchResourcesPostParamsResourceTypeCareTeam                 SearchResourcesPostParamsResourceType = "CareTeam"
-	SearchResourcesPostParamsResourceTypeClaim                    SearchResourcesPostParamsResourceType = "Claim"
-	SearchResourcesPostParamsResourceTypeCommunication            SearchResourcesPostParamsResourceType = "Communication"
-	SearchResourcesPostParamsResourceTypeCondition                SearchResourcesPostParamsResourceType = "Condition"
-	SearchResourcesPostParamsResourceTypeConsent                  SearchResourcesPostParamsResourceType = "Consent"
-	SearchResourcesPostParamsResourceTypeCoverage                 SearchResourcesPostParamsResourceType = "Coverage"
-	SearchResourcesPostParamsResourceTypeDevice                   SearchResourcesPostParamsResourceType = "Device"
-	SearchResourcesPostParamsResourceTypeDiagnosticReport         SearchResourcesPostParamsResourceType = "DiagnosticReport"
-	SearchResourcesPostParamsResourceTypeDocumentReference        SearchResourcesPostParamsResourceType = "DocumentReference"
-	SearchResourcesPostParamsResourceTypeEncounter                SearchResourcesPostParamsResourceType = "Encounter"
-	SearchResourcesPostParamsResourceTypeExplanationOfBenefit     SearchResourcesPostParamsResourceType = "ExplanationOfBenefit"
-	SearchResourcesPostParamsResourceTypeFamilyMemberHistory      SearchResourcesPostParamsResourceType = "FamilyMemberHistory"
-	SearchResourcesPostParamsResourceTypeGoal                     SearchResourcesPostParamsResourceType = "Goal"
-	SearchResourcesPostParamsResourceTypeHealthcareService        SearchResourcesPostParamsResourceType = "HealthcareService"
-	SearchResourcesPostParamsResourceTypeImmunization             SearchResourcesPostParamsResourceType = "Immunization"
-	SearchResourcesPostParamsResourceTypeLocation                 SearchResourcesPostParamsResourceType = "Location"
-	SearchResourcesPostParamsResourceTypeMedication               SearchResourcesPostParamsResourceType = "Medication"
-	SearchResourcesPostParamsResourceTypeMedicationAdministration SearchResourcesPostParamsResourceType = "MedicationAdministration"
-	SearchResourcesPostParamsResourceTypeMedicationDispense       SearchResourcesPostParamsResourceType = "MedicationDispense"
-	SearchResourcesPostParamsResourceTypeMedicationRequest        SearchResourcesPostParamsResourceType = "MedicationRequest"
-	SearchResourcesPostParamsResourceTypeMedicationStatement      SearchResourcesPostParamsResourceType = "MedicationStatement"
-	SearchResourcesPostParamsResourceTypeObservation              SearchResourcesPostParamsResourceType = "Observation"
-	SearchResourcesPostParamsResourceTypeOrganization             SearchResourcesPostParamsResourceType = "Organization"
-	SearchResourcesPostParamsResourceTypePatient                  SearchResourcesPostParamsResourceType = "Patient"
-	SearchResourcesPostParamsResourceTypePractitioner             SearchResourcesPostParamsResourceType = "Practitioner"
-	SearchResourcesPostParamsResourceTypePractitionerRole         SearchResourcesPostParamsResourceType = "PractitionerRole"
-	SearchResourcesPostParamsResourceTypeProcedure                SearchResourcesPostParamsResourceType = "Procedure"
-	SearchResourcesPostParamsResourceTypeProvenance               SearchResourcesPostParamsResourceType = "Provenance"
-	SearchResourcesPostParamsResourceTypeQuestionnaire            SearchResourcesPostParamsResourceType = "Questionnaire"
-	SearchResourcesPostParamsResourceTypeQuestionnaireResponse    SearchResourcesPostParamsResourceType = "QuestionnaireResponse"
-	SearchResourcesPostParamsResourceTypeRelatedPerson            SearchResourcesPostParamsResourceType = "RelatedPerson"
-	SearchResourcesPostParamsResourceTypeSchedule                 SearchResourcesPostParamsResourceType = "Schedule"
-	SearchResourcesPostParamsResourceTypeServiceRequest           SearchResourcesPostParamsResourceType = "ServiceRequest"
-	SearchResourcesPostParamsResourceTypeSlot                     SearchResourcesPostParamsResourceType = "Slot"
-	SearchResourcesPostParamsResourceTypeSpecimen                 SearchResourcesPostParamsResourceType = "Specimen"
-	SearchResourcesPostParamsResourceTypeSubscription             SearchResourcesPostParamsResourceType = "Subscription"
-	SearchResourcesPostParamsResourceTypeTask                     SearchResourcesPostParamsResourceType = "Task"
-)
-
-// Defines values for SearchResourcesPostFormdataBodySummary.
-const (
-	Count SearchResourcesPostFormdataBodySummary = "count"
-	Data  SearchResourcesPostFormdataBodySummary = "data"
-	False SearchResourcesPostFormdataBodySummary = "false"
-	Text  SearchResourcesPostFormdataBodySummary = "text"
-	True  SearchResourcesPostFormdataBodySummary = "true"
-)
-
-// Defines values for SearchResourcesPostFormdataBodyTotal.
-const (
-	Accurate SearchResourcesPostFormdataBodyTotal = "accurate"
-	Estimate SearchResourcesPostFormdataBodyTotal = "estimate"
-	None     SearchResourcesPostFormdataBodyTotal = "none"
-)
-
-// Defines values for DeleteResourceParamsResourceType.
-const (
-	DeleteResourceParamsResourceTypeAllergyIntolerance       DeleteResourceParamsResourceType = "AllergyIntolerance"
-	DeleteResourceParamsResourceTypeAppointment              DeleteResourceParamsResourceType = "Appointment"
-	DeleteResourceParamsResourceTypeCarePlan                 DeleteResourceParamsResourceType = "CarePlan"
-	DeleteResourceParamsResourceTypeCareTeam                 DeleteResourceParamsResourceType = "CareTeam"
-	DeleteResourceParamsResourceTypeClaim                    DeleteResourceParamsResourceType = "Claim"
-	DeleteResourceParamsResourceTypeCommunication            DeleteResourceParamsResourceType = "Communication"
-	DeleteResourceParamsResourceTypeCondition                DeleteResourceParamsResourceType = "Condition"
-	DeleteResourceParamsResourceTypeConsent                  DeleteResourceParamsResourceType = "Consent"
-	DeleteResourceParamsResourceTypeCoverage                 DeleteResourceParamsResourceType = "Coverage"
-	DeleteResourceParamsResourceTypeDevice                   DeleteResourceParamsResourceType = "Device"
-	DeleteResourceParamsResourceTypeDiagnosticReport         DeleteResourceParamsResourceType = "DiagnosticReport"
-	DeleteResourceParamsResourceTypeDocumentReference        DeleteResourceParamsResourceType = "DocumentReference"
-	DeleteResourceParamsResourceTypeEncounter                DeleteResourceParamsResourceType = "Encounter"
-	DeleteResourceParamsResourceTypeExplanationOfBenefit     DeleteResourceParamsResourceType = "ExplanationOfBenefit"
-	DeleteResourceParamsResourceTypeFamilyMemberHistory      DeleteResourceParamsResourceType = "FamilyMemberHistory"
-	DeleteResourceParamsResourceTypeGoal                     DeleteResourceParamsResourceType = "Goal"
-	DeleteResourceParamsResourceTypeHealthcareService        DeleteResourceParamsResourceType = "HealthcareService"
-	DeleteResourceParamsResourceTypeImmunization             DeleteResourceParamsResourceType = "Immunization"
-	DeleteResourceParamsResourceTypeLocation                 DeleteResourceParamsResourceType = "Location"
-	DeleteResourceParamsResourceTypeMedication               DeleteResourceParamsResourceType = "Medication"
-	DeleteResourceParamsResourceTypeMedicationAdministration DeleteResourceParamsResourceType = "MedicationAdministration"
-	DeleteResourceParamsResourceTypeMedicationDispense       DeleteResourceParamsResourceType = "MedicationDispense"
-	DeleteResourceParamsResourceTypeMedicationRequest        DeleteResourceParamsResourceType = "MedicationRequest"
-	DeleteResourceParamsResourceTypeMedicationStatement      DeleteResourceParamsResourceType = "MedicationStatement"
-	DeleteResourceParamsResourceTypeObservation              DeleteResourceParamsResourceType = "Observation"
-	DeleteResourceParamsResourceTypeOrganization             DeleteResourceParamsResourceType = "Organization"
-	DeleteResourceParamsResourceTypePatient                  DeleteResourceParamsResourceType = "Patient"
-	DeleteResourceParamsResourceTypePractitioner             DeleteResourceParamsResourceType = "Practitioner"
-	DeleteResourceParamsResourceTypePractitionerRole         DeleteResourceParamsResourceType = "PractitionerRole"
-	DeleteResourceParamsResourceTypeProcedure                DeleteResourceParamsResourceType = "Procedure"
-	DeleteResourceParamsResourceTypeProvenance               DeleteResourceParamsResourceType = "Provenance"
-	DeleteResourceParamsResourceTypeQuestionnaire            DeleteResourceParamsResourceType = "Questionnaire"
-	DeleteResourceParamsResourceTypeQuestionnaireResponse    DeleteResourceParamsResourceType = "QuestionnaireResponse"
-	DeleteResourceParamsResourceTypeRelatedPerson            DeleteResourceParamsResourceType = "RelatedPerson"
-	DeleteResourceParamsResourceTypeSchedule                 DeleteResourceParamsResourceType = "Schedule"
-	DeleteResourceParamsResourceTypeServiceRequest           DeleteResourceParamsResourceType = "ServiceRequest"
-	DeleteResourceParamsResourceTypeSlot                     DeleteResourceParamsResourceType = "Slot"
-	DeleteResourceParamsResourceTypeSpecimen                 DeleteResourceParamsResourceType = "Specimen"
-	DeleteResourceParamsResourceTypeSubscription             DeleteResourceParamsResourceType = "Subscription"
-	DeleteResourceParamsResourceTypeTask                     DeleteResourceParamsResourceType = "Task"
-)
-
-// Defines values for ReadResourceParamsResourceType.
-const (
-	ReadResourceParamsResourceTypeAllergyIntolerance       ReadResourceParamsResourceType = "AllergyIntolerance"
-	ReadResourceParamsResourceTypeAppointment              ReadResourceParamsResourceType = "Appointment"
-	ReadResourceParamsResourceTypeCarePlan                 ReadResourceParamsResourceType = "CarePlan"
-	ReadResourceParamsResourceTypeCareTeam                 ReadResourceParamsResourceType = "CareTeam"
-	ReadResourceParamsResourceTypeClaim                    ReadResourceParamsResourceType = "Claim"
-	ReadResourceParamsResourceTypeCommunication            ReadResourceParamsResourceType = "Communication"
-	ReadResourceParamsResourceTypeCondition                ReadResourceParamsResourceType = "Condition"
-	ReadResourceParamsResourceTypeConsent                  ReadResourceParamsResourceType = "Consent"
-	ReadResourceParamsResourceTypeCoverage                 ReadResourceParamsResourceType = "Coverage"
-	ReadResourceParamsResourceTypeDevice                   ReadResourceParamsResourceType = "Device"
-	ReadResourceParamsResourceTypeDiagnosticReport         ReadResourceParamsResourceType = "DiagnosticReport"
-	ReadResourceParamsResourceTypeDocumentReference        ReadResourceParamsResourceType = "DocumentReference"
-	ReadResourceParamsResourceTypeEncounter                ReadResourceParamsResourceType = "Encounter"
-	ReadResourceParamsResourceTypeExplanationOfBenefit     ReadResourceParamsResourceType = "ExplanationOfBenefit"
-	ReadResourceParamsResourceTypeFamilyMemberHistory      ReadResourceParamsResourceType = "FamilyMemberHistory"
-	ReadResourceParamsResourceTypeGoal                     ReadResourceParamsResourceType = "Goal"
-	ReadResourceParamsResourceTypeHealthcareService        ReadResourceParamsResourceType = "HealthcareService"
-	ReadResourceParamsResourceTypeImmunization             ReadResourceParamsResourceType = "Immunization"
-	ReadResourceParamsResourceTypeLocation                 ReadResourceParamsResourceType = "Location"
-	ReadResourceParamsResourceTypeMedication               ReadResourceParamsResourceType = "Medication"
-	ReadResourceParamsResourceTypeMedicationAdministration ReadResourceParamsResourceType = "MedicationAdministration"
-	ReadResourceParamsResourceTypeMedicationDispense       ReadResourceParamsResourceType = "MedicationDispense"
-	ReadResourceParamsResourceTypeMedicationRequest        ReadResourceParamsResourceType = "MedicationRequest"
-	ReadResourceParamsResourceTypeMedicationStatement      ReadResourceParamsResourceType = "MedicationStatement"
-	ReadResourceParamsResourceTypeObservation              ReadResourceParamsResourceType = "Observation"
-	ReadResourceParamsResourceTypeOrganization             ReadResourceParamsResourceType = "Organization"
-	ReadResourceParamsResourceTypePatient                  ReadResourceParamsResourceType = "Patient"
-	ReadResourceParamsResourceTypePractitioner             ReadResourceParamsResourceType = "Practitioner"
-	ReadResourceParamsResourceTypePractitionerRole         ReadResourceParamsResourceType = "PractitionerRole"
-	ReadResourceParamsResourceTypeProcedure                ReadResourceParamsResourceType = "Procedure"
-	ReadResourceParamsResourceTypeProvenance               ReadResourceParamsResourceType = "Provenance"
-	ReadResourceParamsResourceTypeQuestionnaire            ReadResourceParamsResourceType = "Questionnaire"
-	ReadResourceParamsResourceTypeQuestionnaireResponse    ReadResourceParamsResourceType = "QuestionnaireResponse"
-	ReadResourceParamsResourceTypeRelatedPerson            ReadResourceParamsResourceType = "RelatedPerson"
-	ReadResourceParamsResourceTypeSchedule                 ReadResourceParamsResourceType = "Schedule"
-	ReadResourceParamsResourceTypeServiceRequest           ReadResourceParamsResourceType = "ServiceRequest"
-	ReadResourceParamsResourceTypeSlot                     ReadResourceParamsResourceType = "Slot"
-	ReadResourceParamsResourceTypeSpecimen                 ReadResourceParamsResourceType = "Specimen"
-	ReadResourceParamsResourceTypeSubscription             ReadResourceParamsResourceType = "Subscription"
-	ReadResourceParamsResourceTypeTask                     ReadResourceParamsResourceType = "Task"
-)
-
-// Defines values for PatchResourceParamsResourceType.
-const (
-	PatchResourceParamsResourceTypeAllergyIntolerance       PatchResourceParamsResourceType = "AllergyIntolerance"
-	PatchResourceParamsResourceTypeAppointment              PatchResourceParamsResourceType = "Appointment"
-	PatchResourceParamsResourceTypeCarePlan                 PatchResourceParamsResourceType = "CarePlan"
-	PatchResourceParamsResourceTypeCareTeam                 PatchResourceParamsResourceType = "CareTeam"
-	PatchResourceParamsResourceTypeClaim                    PatchResourceParamsResourceType = "Claim"
-	PatchResourceParamsResourceTypeCommunication            PatchResourceParamsResourceType = "Communication"
-	PatchResourceParamsResourceTypeCondition                PatchResourceParamsResourceType = "Condition"
-	PatchResourceParamsResourceTypeConsent                  PatchResourceParamsResourceType = "Consent"
-	PatchResourceParamsResourceTypeCoverage                 PatchResourceParamsResourceType = "Coverage"
-	PatchResourceParamsResourceTypeDevice                   PatchResourceParamsResourceType = "Device"
-	PatchResourceParamsResourceTypeDiagnosticReport         PatchResourceParamsResourceType = "DiagnosticReport"
-	PatchResourceParamsResourceTypeDocumentReference        PatchResourceParamsResourceType = "DocumentReference"
-	PatchResourceParamsResourceTypeEncounter                PatchResourceParamsResourceType = "Encounter"
-	PatchResourceParamsResourceTypeExplanationOfBenefit     PatchResourceParamsResourceType = "ExplanationOfBenefit"
-	PatchResourceParamsResourceTypeFamilyMemberHistory      PatchResourceParamsResourceType = "FamilyMemberHistory"
-	PatchResourceParamsResourceTypeGoal                     PatchResourceParamsResourceType = "Goal"
-	PatchResourceParamsResourceTypeHealthcareService        PatchResourceParamsResourceType = "HealthcareService"
-	PatchResourceParamsResourceTypeImmunization             PatchResourceParamsResourceType = "Immunization"
-	PatchResourceParamsResourceTypeLocation                 PatchResourceParamsResourceType = "Location"
-	PatchResourceParamsResourceTypeMedication               PatchResourceParamsResourceType = "Medication"
-	PatchResourceParamsResourceTypeMedicationAdministration PatchResourceParamsResourceType = "MedicationAdministration"
-	PatchResourceParamsResourceTypeMedicationDispense       PatchResourceParamsResourceType = "MedicationDispense"
-	PatchResourceParamsResourceTypeMedicationRequest        PatchResourceParamsResourceType = "MedicationRequest"
-	PatchResourceParamsResourceTypeMedicationStatement      PatchResourceParamsResourceType = "MedicationStatement"
-	PatchResourceParamsResourceTypeObservation              PatchResourceParamsResourceType = "Observation"
-	PatchResourceParamsResourceTypeOrganization             PatchResourceParamsResourceType = "Organization"
-	PatchResourceParamsResourceTypePatient                  PatchResourceParamsResourceType = "Patient"
-	PatchResourceParamsResourceTypePractitioner             PatchResourceParamsResourceType = "Practitioner"
-	PatchResourceParamsResourceTypePractitionerRole         PatchResourceParamsResourceType = "PractitionerRole"
-	PatchResourceParamsResourceTypeProcedure                PatchResourceParamsResourceType = "Procedure"
-	PatchResourceParamsResourceTypeProvenance               PatchResourceParamsResourceType = "Provenance"
-	PatchResourceParamsResourceTypeQuestionnaire            PatchResourceParamsResourceType = "Questionnaire"
-	PatchResourceParamsResourceTypeQuestionnaireResponse    PatchResourceParamsResourceType = "QuestionnaireResponse"
-	PatchResourceParamsResourceTypeRelatedPerson            PatchResourceParamsResourceType = "RelatedPerson"
-	PatchResourceParamsResourceTypeSchedule                 PatchResourceParamsResourceType = "Schedule"
-	PatchResourceParamsResourceTypeServiceRequest           PatchResourceParamsResourceType = "ServiceRequest"
-	PatchResourceParamsResourceTypeSlot                     PatchResourceParamsResourceType = "Slot"
-	PatchResourceParamsResourceTypeSpecimen                 PatchResourceParamsResourceType = "Specimen"
-	PatchResourceParamsResourceTypeSubscription             PatchResourceParamsResourceType = "Subscription"
-	PatchResourceParamsResourceTypeTask                     PatchResourceParamsResourceType = "Task"
-)
-
-// Defines values for UpdateResourceParamsResourceType.
-const (
-	UpdateResourceParamsResourceTypeAllergyIntolerance       UpdateResourceParamsResourceType = "AllergyIntolerance"
-	UpdateResourceParamsResourceTypeAppointment              UpdateResourceParamsResourceType = "Appointment"
-	UpdateResourceParamsResourceTypeCarePlan                 UpdateResourceParamsResourceType = "CarePlan"
-	UpdateResourceParamsResourceTypeCareTeam                 UpdateResourceParamsResourceType = "CareTeam"
-	UpdateResourceParamsResourceTypeClaim                    UpdateResourceParamsResourceType = "Claim"
-	UpdateResourceParamsResourceTypeCommunication            UpdateResourceParamsResourceType = "Communication"
-	UpdateResourceParamsResourceTypeCondition                UpdateResourceParamsResourceType = "Condition"
-	UpdateResourceParamsResourceTypeConsent                  UpdateResourceParamsResourceType = "Consent"
-	UpdateResourceParamsResourceTypeCoverage                 UpdateResourceParamsResourceType = "Coverage"
-	UpdateResourceParamsResourceTypeDevice                   UpdateResourceParamsResourceType = "Device"
-	UpdateResourceParamsResourceTypeDiagnosticReport         UpdateResourceParamsResourceType = "DiagnosticReport"
-	UpdateResourceParamsResourceTypeDocumentReference        UpdateResourceParamsResourceType = "DocumentReference"
-	UpdateResourceParamsResourceTypeEncounter                UpdateResourceParamsResourceType = "Encounter"
-	UpdateResourceParamsResourceTypeExplanationOfBenefit     UpdateResourceParamsResourceType = "ExplanationOfBenefit"
-	UpdateResourceParamsResourceTypeFamilyMemberHistory      UpdateResourceParamsResourceType = "FamilyMemberHistory"
-	UpdateResourceParamsResourceTypeGoal                     UpdateResourceParamsResourceType = "Goal"
-	UpdateResourceParamsResourceTypeHealthcareService        UpdateResourceParamsResourceType = "HealthcareService"
-	UpdateResourceParamsResourceTypeImmunization             UpdateResourceParamsResourceType = "Immunization"
-	UpdateResourceParamsResourceTypeLocation                 UpdateResourceParamsResourceType = "Location"
-	UpdateResourceParamsResourceTypeMedication               UpdateResourceParamsResourceType = "Medication"
-	UpdateResourceParamsResourceTypeMedicationAdministration UpdateResourceParamsResourceType = "MedicationAdministration"
-	UpdateResourceParamsResourceTypeMedicationDispense       UpdateResourceParamsResourceType = "MedicationDispense"
-	UpdateResourceParamsResourceTypeMedicationRequest        UpdateResourceParamsResourceType = "MedicationRequest"
-	UpdateResourceParamsResourceTypeMedicationStatement      UpdateResourceParamsResourceType = "MedicationStatement"
-	UpdateResourceParamsResourceTypeObservation              UpdateResourceParamsResourceType = "Observation"
-	UpdateResourceParamsResourceTypeOrganization             UpdateResourceParamsResourceType = "Organization"
-	UpdateResourceParamsResourceTypePatient                  UpdateResourceParamsResourceType = "Patient"
-	UpdateResourceParamsResourceTypePractitioner             UpdateResourceParamsResourceType = "Practitioner"
-	UpdateResourceParamsResourceTypePractitionerRole         UpdateResourceParamsResourceType = "PractitionerRole"
-	UpdateResourceParamsResourceTypeProcedure                UpdateResourceParamsResourceType = "Procedure"
-	UpdateResourceParamsResourceTypeProvenance               UpdateResourceParamsResourceType = "Provenance"
-	UpdateResourceParamsResourceTypeQuestionnaire            UpdateResourceParamsResourceType = "Questionnaire"
-	UpdateResourceParamsResourceTypeQuestionnaireResponse    UpdateResourceParamsResourceType = "QuestionnaireResponse"
-	UpdateResourceParamsResourceTypeRelatedPerson            UpdateResourceParamsResourceType = "RelatedPerson"
-	UpdateResourceParamsResourceTypeSchedule                 UpdateResourceParamsResourceType = "Schedule"
-	UpdateResourceParamsResourceTypeServiceRequest           UpdateResourceParamsResourceType = "ServiceRequest"
-	UpdateResourceParamsResourceTypeSlot                     UpdateResourceParamsResourceType = "Slot"
-	UpdateResourceParamsResourceTypeSpecimen                 UpdateResourceParamsResourceType = "Specimen"
-	UpdateResourceParamsResourceTypeSubscription             UpdateResourceParamsResourceType = "Subscription"
-	UpdateResourceParamsResourceTypeTask                     UpdateResourceParamsResourceType = "Task"
-)
-
-// Defines values for GetResourceHistoryParamsResourceType.
-const (
-	GetResourceHistoryParamsResourceTypeAllergyIntolerance       GetResourceHistoryParamsResourceType = "AllergyIntolerance"
-	GetResourceHistoryParamsResourceTypeAppointment              GetResourceHistoryParamsResourceType = "Appointment"
-	GetResourceHistoryParamsResourceTypeCarePlan                 GetResourceHistoryParamsResourceType = "CarePlan"
-	GetResourceHistoryParamsResourceTypeCareTeam                 GetResourceHistoryParamsResourceType = "CareTeam"
-	GetResourceHistoryParamsResourceTypeClaim                    GetResourceHistoryParamsResourceType = "Claim"
-	GetResourceHistoryParamsResourceTypeCommunication            GetResourceHistoryParamsResourceType = "Communication"
-	GetResourceHistoryParamsResourceTypeCondition                GetResourceHistoryParamsResourceType = "Condition"
-	GetResourceHistoryParamsResourceTypeConsent                  GetResourceHistoryParamsResourceType = "Consent"
-	GetResourceHistoryParamsResourceTypeCoverage                 GetResourceHistoryParamsResourceType = "Coverage"
-	GetResourceHistoryParamsResourceTypeDevice                   GetResourceHistoryParamsResourceType = "Device"
-	GetResourceHistoryParamsResourceTypeDiagnosticReport         GetResourceHistoryParamsResourceType = "DiagnosticReport"
-	GetResourceHistoryParamsResourceTypeDocumentReference        GetResourceHistoryParamsResourceType = "DocumentReference"
-	GetResourceHistoryParamsResourceTypeEncounter                GetResourceHistoryParamsResourceType = "Encounter"
-	GetResourceHistoryParamsResourceTypeExplanationOfBenefit     GetResourceHistoryParamsResourceType = "ExplanationOfBenefit"
-	GetResourceHistoryParamsResourceTypeFamilyMemberHistory      GetResourceHistoryParamsResourceType = "FamilyMemberHistory"
-	GetResourceHistoryParamsResourceTypeGoal                     GetResourceHistoryParamsResourceType = "Goal"
-	GetResourceHistoryParamsResourceTypeHealthcareService        GetResourceHistoryParamsResourceType = "HealthcareService"
-	GetResourceHistoryParamsResourceTypeImmunization             GetResourceHistoryParamsResourceType = "Immunization"
-	GetResourceHistoryParamsResourceTypeLocation                 GetResourceHistoryParamsResourceType = "Location"
-	GetResourceHistoryParamsResourceTypeMedication               GetResourceHistoryParamsResourceType = "Medication"
-	GetResourceHistoryParamsResourceTypeMedicationAdministration GetResourceHistoryParamsResourceType = "MedicationAdministration"
-	GetResourceHistoryParamsResourceTypeMedicationDispense       GetResourceHistoryParamsResourceType = "MedicationDispense"
-	GetResourceHistoryParamsResourceTypeMedicationRequest        GetResourceHistoryParamsResourceType = "MedicationRequest"
-	GetResourceHistoryParamsResourceTypeMedicationStatement      GetResourceHistoryParamsResourceType = "MedicationStatement"
-	GetResourceHistoryParamsResourceTypeObservation              GetResourceHistoryParamsResourceType = "Observation"
-	GetResourceHistoryParamsResourceTypeOrganization             GetResourceHistoryParamsResourceType = "Organization"
-	GetResourceHistoryParamsResourceTypePatient                  GetResourceHistoryParamsResourceType = "Patient"
-	GetResourceHistoryParamsResourceTypePractitioner             GetResourceHistoryParamsResourceType = "Practitioner"
-	GetResourceHistoryParamsResourceTypePractitionerRole         GetResourceHistoryParamsResourceType = "PractitionerRole"
-	GetResourceHistoryParamsResourceTypeProcedure                GetResourceHistoryParamsResourceType = "Procedure"
-	GetResourceHistoryParamsResourceTypeProvenance               GetResourceHistoryParamsResourceType = "Provenance"
-	GetResourceHistoryParamsResourceTypeQuestionnaire            GetResourceHistoryParamsResourceType = "Questionnaire"
-	GetResourceHistoryParamsResourceTypeQuestionnaireResponse    GetResourceHistoryParamsResourceType = "QuestionnaireResponse"
-	GetResourceHistoryParamsResourceTypeRelatedPerson            GetResourceHistoryParamsResourceType = "RelatedPerson"
-	GetResourceHistoryParamsResourceTypeSchedule                 GetResourceHistoryParamsResourceType = "Schedule"
-	GetResourceHistoryParamsResourceTypeServiceRequest           GetResourceHistoryParamsResourceType = "ServiceRequest"
-	GetResourceHistoryParamsResourceTypeSlot                     GetResourceHistoryParamsResourceType = "Slot"
-	GetResourceHistoryParamsResourceTypeSpecimen                 GetResourceHistoryParamsResourceType = "Specimen"
-	GetResourceHistoryParamsResourceTypeSubscription             GetResourceHistoryParamsResourceType = "Subscription"
-	GetResourceHistoryParamsResourceTypeTask                     GetResourceHistoryParamsResourceType = "Task"
-)
-
-// Defines values for ReadResourceVersionParamsResourceType.
-const (
-	ReadResourceVersionParamsResourceTypeAllergyIntolerance       ReadResourceVersionParamsResourceType = "AllergyIntolerance"
-	ReadResourceVersionParamsResourceTypeAppointment              ReadResourceVersionParamsResourceType = "Appointment"
-	ReadResourceVersionParamsResourceTypeCarePlan                 ReadResourceVersionParamsResourceType = "CarePlan"
-	ReadResourceVersionParamsResourceTypeCareTeam                 ReadResourceVersionParamsResourceType = "CareTeam"
-	ReadResourceVersionParamsResourceTypeClaim                    ReadResourceVersionParamsResourceType = "Claim"
-	ReadResourceVersionParamsResourceTypeCommunication            ReadResourceVersionParamsResourceType = "Communication"
-	ReadResourceVersionParamsResourceTypeCondition                ReadResourceVersionParamsResourceType = "Condition"
-	ReadResourceVersionParamsResourceTypeConsent                  ReadResourceVersionParamsResourceType = "Consent"
-	ReadResourceVersionParamsResourceTypeCoverage                 ReadResourceVersionParamsResourceType = "Coverage"
-	ReadResourceVersionParamsResourceTypeDevice                   ReadResourceVersionParamsResourceType = "Device"
-	ReadResourceVersionParamsResourceTypeDiagnosticReport         ReadResourceVersionParamsResourceType = "DiagnosticReport"
-	ReadResourceVersionParamsResourceTypeDocumentReference        ReadResourceVersionParamsResourceType = "DocumentReference"
-	ReadResourceVersionParamsResourceTypeEncounter                ReadResourceVersionParamsResourceType = "Encounter"
-	ReadResourceVersionParamsResourceTypeExplanationOfBenefit     ReadResourceVersionParamsResourceType = "ExplanationOfBenefit"
-	ReadResourceVersionParamsResourceTypeFamilyMemberHistory      ReadResourceVersionParamsResourceType = "FamilyMemberHistory"
-	ReadResourceVersionParamsResourceTypeGoal                     ReadResourceVersionParamsResourceType = "Goal"
-	ReadResourceVersionParamsResourceTypeHealthcareService        ReadResourceVersionParamsResourceType = "HealthcareService"
-	ReadResourceVersionParamsResourceTypeImmunization             ReadResourceVersionParamsResourceType = "Immunization"
-	ReadResourceVersionParamsResourceTypeLocation                 ReadResourceVersionParamsResourceType = "Location"
-	ReadResourceVersionParamsResourceTypeMedication               ReadResourceVersionParamsResourceType = "Medication"
-	ReadResourceVersionParamsResourceTypeMedicationAdministration ReadResourceVersionParamsResourceType = "MedicationAdministration"
-	ReadResourceVersionParamsResourceTypeMedicationDispense       ReadResourceVersionParamsResourceType = "MedicationDispense"
-	ReadResourceVersionParamsResourceTypeMedicationRequest        ReadResourceVersionParamsResourceType = "MedicationRequest"
-	ReadResourceVersionParamsResourceTypeMedicationStatement      ReadResourceVersionParamsResourceType = "MedicationStatement"
-	ReadResourceVersionParamsResourceTypeObservation              ReadResourceVersionParamsResourceType = "Observation"
-	ReadResourceVersionParamsResourceTypeOrganization             ReadResourceVersionParamsResourceType = "Organization"
-	ReadResourceVersionParamsResourceTypePatient                  ReadResourceVersionParamsResourceType = "Patient"
-	ReadResourceVersionParamsResourceTypePractitioner             ReadResourceVersionParamsResourceType = "Practitioner"
-	ReadResourceVersionParamsResourceTypePractitionerRole         ReadResourceVersionParamsResourceType = "PractitionerRole"
-	ReadResourceVersionParamsResourceTypeProcedure                ReadResourceVersionParamsResourceType = "Procedure"
-	ReadResourceVersionParamsResourceTypeProvenance               ReadResourceVersionParamsResourceType = "Provenance"
-	ReadResourceVersionParamsResourceTypeQuestionnaire            ReadResourceVersionParamsResourceType = "Questionnaire"
-	ReadResourceVersionParamsResourceTypeQuestionnaireResponse    ReadResourceVersionParamsResourceType = "QuestionnaireResponse"
-	ReadResourceVersionParamsResourceTypeRelatedPerson            ReadResourceVersionParamsResourceType = "RelatedPerson"
-	ReadResourceVersionParamsResourceTypeSchedule                 ReadResourceVersionParamsResourceType = "Schedule"
-	ReadResourceVersionParamsResourceTypeServiceRequest           ReadResourceVersionParamsResourceType = "ServiceRequest"
-	ReadResourceVersionParamsResourceTypeSlot                     ReadResourceVersionParamsResourceType = "Slot"
-	ReadResourceVersionParamsResourceTypeSpecimen                 ReadResourceVersionParamsResourceType = "Specimen"
-	ReadResourceVersionParamsResourceTypeSubscription             ReadResourceVersionParamsResourceType = "Subscription"
-	ReadResourceVersionParamsResourceTypeTask                     ReadResourceVersionParamsResourceType = "Task"
 )
 
 // BulkOperationAccepted defines model for BulkOperationAccepted.
@@ -686,14 +170,16 @@ type BulkOperationStatus struct {
 	ProcessedCount int       `json:"processed_count"`
 
 	// Result Result Bundle (present when status is completed).
-	Result     *RawJSON                  `json:"result,omitempty"`
-	Status     BulkOperationStatusStatus `json:"status"`
-	TotalCount int                       `json:"total_count"`
-	UpdatedAt  time.Time                 `json:"updated_at"`
+	Result *RawJSON `json:"result,omitempty"`
+
+	// Status Bulk operation lifecycle status
+	Status     BulkOperationStatusCode `json:"status"`
+	TotalCount int                     `json:"total_count"`
+	UpdatedAt  time.Time               `json:"updated_at"`
 }
 
-// BulkOperationStatusStatus defines model for BulkOperationStatus.Status.
-type BulkOperationStatusStatus string
+// BulkOperationStatusCode Bulk operation lifecycle status
+type BulkOperationStatusCode string
 
 // Bundle defines model for Bundle.
 type Bundle struct {
@@ -701,40 +187,48 @@ type Bundle struct {
 	Link         *[]BundleLink      `json:"link,omitempty"`
 	ResourceType BundleResourceType `json:"resourceType"`
 	Total        *int               `json:"total,omitempty"`
-	Type         BundleType         `json:"type"`
+
+	// Type FHIR Bundle type
+	Type BundleType `json:"type"`
 }
 
 // BundleResourceType defines model for Bundle.ResourceType.
 type BundleResourceType string
 
-// BundleType defines model for Bundle.Type.
-type BundleType string
-
 // BundleEntry defines model for BundleEntry.
 type BundleEntry struct {
-	FullUrl *string `json:"fullUrl,omitempty"`
-	Request *struct {
-		Method *string `json:"method,omitempty"`
-		Url    *string `json:"url,omitempty"`
-	} `json:"request,omitempty"`
+	FullUrl *string             `json:"fullUrl,omitempty"`
+	Request *BundleEntryRequest `json:"request,omitempty"`
 
 	// Resource The resource content (arbitrary FHIR resource JSON).
-	Resource *RawJSON `json:"resource,omitempty"`
-	Response *struct {
-		Etag         *string `json:"etag,omitempty"`
-		LastModified *string `json:"lastModified,omitempty"`
-		Location     *string `json:"location,omitempty"`
-
-		// Outcome OperationOutcome for this entry (arbitrary JSON).
-		Outcome *RawJSON `json:"outcome,omitempty"`
-		Status  *string  `json:"status,omitempty"`
-	} `json:"response,omitempty"`
-	Search *struct {
-		Mode *BundleEntrySearchMode `json:"mode,omitempty"`
-	} `json:"search,omitempty"`
+	Resource *RawJSON             `json:"resource,omitempty"`
+	Response *BundleEntryResponse `json:"response,omitempty"`
+	Search   *BundleEntrySearch   `json:"search,omitempty"`
 }
 
-// BundleEntrySearchMode defines model for BundleEntry.Search.Mode.
+// BundleEntryRequest defines model for BundleEntryRequest.
+type BundleEntryRequest struct {
+	Method *string `json:"method,omitempty"`
+	Url    *string `json:"url,omitempty"`
+}
+
+// BundleEntryResponse defines model for BundleEntryResponse.
+type BundleEntryResponse struct {
+	Etag         *string `json:"etag,omitempty"`
+	LastModified *string `json:"lastModified,omitempty"`
+	Location     *string `json:"location,omitempty"`
+
+	// Outcome OperationOutcome for this entry (arbitrary JSON).
+	Outcome *RawJSON `json:"outcome,omitempty"`
+	Status  *string  `json:"status,omitempty"`
+}
+
+// BundleEntrySearch defines model for BundleEntrySearch.
+type BundleEntrySearch struct {
+	Mode *BundleEntrySearchMode `json:"mode,omitempty"`
+}
+
+// BundleEntrySearchMode defines model for BundleEntrySearch.Mode.
 type BundleEntrySearchMode string
 
 // BundleLink defines model for BundleLink.
@@ -742,6 +236,9 @@ type BundleLink struct {
 	Relation string `json:"relation"`
 	Url      string `json:"url"`
 }
+
+// BundleType FHIR Bundle type
+type BundleType string
 
 // FhirResource An arbitrary FHIR resource stored as raw JSON.
 type FhirResource = RawJSON
@@ -754,15 +251,20 @@ type HealthResponse struct {
 // HealthResponseStatus defines model for HealthResponse.Status.
 type HealthResponseStatus string
 
+// IssueSeverity FHIR OperationOutcome issue severity
+type IssueSeverity string
+
 // JsonPatch JSON Patch document (RFC 6902)
 type JsonPatch = []struct {
-	From  *string     `json:"from,omitempty"`
+	From *string `json:"from,omitempty"`
+
+	// Op JSON Patch operation type (RFC 6902)
 	Op    JsonPatchOp `json:"op"`
 	Path  string      `json:"path"`
 	Value interface{} `json:"value,omitempty"`
 }
 
-// JsonPatchOp defines model for JsonPatch.Op.
+// JsonPatchOp JSON Patch operation type (RFC 6902)
 type JsonPatchOp string
 
 // OAuthError defines model for OAuthError.
@@ -784,14 +286,22 @@ type OperationOutcomeResourceType string
 // OperationOutcomeIssue defines model for OperationOutcomeIssue.
 type OperationOutcomeIssue struct {
 	// Code FHIR issue type code
-	Code        string                        `json:"code"`
-	Diagnostics *string                       `json:"diagnostics,omitempty"`
-	Expression  *[]string                     `json:"expression,omitempty"`
-	Severity    OperationOutcomeIssueSeverity `json:"severity"`
+	Code        string    `json:"code"`
+	Diagnostics *string   `json:"diagnostics,omitempty"`
+	Expression  *[]string `json:"expression,omitempty"`
+
+	// Severity FHIR OperationOutcome issue severity
+	Severity IssueSeverity `json:"severity"`
 }
 
-// OperationOutcomeIssueSeverity defines model for OperationOutcomeIssue.Severity.
-type OperationOutcomeIssueSeverity string
+// ResourceType FHIR resource type
+type ResourceType string
+
+// SearchSummaryMode Search response summary mode
+type SearchSummaryMode string
+
+// SearchTotalMode Controls whether total count is included in search results
+type SearchTotalMode string
 
 // SmartConfiguration defines model for SmartConfiguration.
 type SmartConfiguration struct {
@@ -820,9 +330,6 @@ type TokenResponseTokenType string
 // FhirId defines model for fhirId.
 type FhirId = string
 
-// ResourceType defines model for resourceType.
-type ResourceType string
-
 // SearchCount defines model for searchCount.
 type SearchCount = int
 
@@ -844,11 +351,11 @@ type SearchRevinclude = []string
 // SearchSort defines model for searchSort.
 type SearchSort = string
 
-// SearchSummary defines model for searchSummary.
-type SearchSummary string
+// SearchSummary Search response summary mode
+type SearchSummary = SearchSummaryMode
 
-// SearchTotal defines model for searchTotal.
-type SearchTotal string
+// SearchTotal Controls whether total count is included in search results
+type SearchTotal = SearchTotalMode
 
 // StoreId defines model for storeId.
 type StoreId = string
@@ -911,9 +418,6 @@ type ConditionalDeleteResourceParams struct {
 	Identifier *string `form:"identifier,omitempty" json:"identifier,omitempty"`
 }
 
-// ConditionalDeleteResourceParamsResourceType defines parameters for ConditionalDeleteResource.
-type ConditionalDeleteResourceParamsResourceType string
-
 // SearchResourcesParams defines parameters for SearchResources.
 type SearchResourcesParams struct {
 	// UnderscoreCount Page size (max 1000)
@@ -926,10 +430,10 @@ type SearchResourcesParams struct {
 	UnderscoreCursor *SearchCursor `form:"_cursor,omitempty" json:"_cursor,omitempty"`
 
 	// UnderscoreTotal Controls whether total count is included in results
-	UnderscoreTotal *SearchResourcesParamsTotal `form:"_total,omitempty" json:"_total,omitempty"`
+	UnderscoreTotal *SearchTotal `form:"_total,omitempty" json:"_total,omitempty"`
 
 	// UnderscoreSummary Response summary mode
-	UnderscoreSummary *SearchResourcesParamsSummary `form:"_summary,omitempty" json:"_summary,omitempty"`
+	UnderscoreSummary *SearchSummary `form:"_summary,omitempty" json:"_summary,omitempty"`
 
 	// UnderscoreElements Comma-separated list of element names to include
 	UnderscoreElements *SearchElements `form:"_elements,omitempty" json:"_elements,omitempty"`
@@ -944,15 +448,6 @@ type SearchResourcesParams struct {
 	UnderscoreRevinclude *SearchRevinclude `form:"_revinclude,omitempty" json:"_revinclude,omitempty"`
 }
 
-// SearchResourcesParamsTotal defines parameters for SearchResources.
-type SearchResourcesParamsTotal string
-
-// SearchResourcesParamsSummary defines parameters for SearchResources.
-type SearchResourcesParamsSummary string
-
-// SearchResourcesParamsResourceType defines parameters for SearchResources.
-type SearchResourcesParamsResourceType string
-
 // CreateResourceParams defines parameters for CreateResource.
 type CreateResourceParams struct {
 	// IfNoneExist Conditional create search criteria (URL query string format).
@@ -960,40 +455,23 @@ type CreateResourceParams struct {
 	IfNoneExist *string `json:"If-None-Exist,omitempty"`
 }
 
-// CreateResourceParamsResourceType defines parameters for CreateResource.
-type CreateResourceParamsResourceType string
-
-// ValidateResourceParamsResourceType defines parameters for ValidateResource.
-type ValidateResourceParamsResourceType string
-
 // SearchResourcesPostFormdataBody defines parameters for SearchResourcesPost.
 type SearchResourcesPostFormdataBody struct {
-	UnderscoreCount      *int                                    `form:"_count,omitempty" json:"_count,omitempty"`
-	UnderscoreCursor     *string                                 `form:"_cursor,omitempty" json:"_cursor,omitempty"`
-	UnderscoreElements   *string                                 `form:"_elements,omitempty" json:"_elements,omitempty"`
-	UnderscoreInclude    *[]string                               `form:"_include,omitempty" json:"_include,omitempty"`
-	UnderscoreOffset     *int                                    `form:"_offset,omitempty" json:"_offset,omitempty"`
-	UnderscoreRevinclude *[]string                               `form:"_revinclude,omitempty" json:"_revinclude,omitempty"`
-	UnderscoreSort       *string                                 `form:"_sort,omitempty" json:"_sort,omitempty"`
-	UnderscoreSummary    *SearchResourcesPostFormdataBodySummary `form:"_summary,omitempty" json:"_summary,omitempty"`
-	UnderscoreTotal      *SearchResourcesPostFormdataBodyTotal   `form:"_total,omitempty" json:"_total,omitempty"`
-	AdditionalProperties map[string]string                       `json:"-"`
+	UnderscoreCount      *int      `form:"_count,omitempty" json:"_count,omitempty"`
+	UnderscoreCursor     *string   `form:"_cursor,omitempty" json:"_cursor,omitempty"`
+	UnderscoreElements   *string   `form:"_elements,omitempty" json:"_elements,omitempty"`
+	UnderscoreInclude    *[]string `form:"_include,omitempty" json:"_include,omitempty"`
+	UnderscoreOffset     *int      `form:"_offset,omitempty" json:"_offset,omitempty"`
+	UnderscoreRevinclude *[]string `form:"_revinclude,omitempty" json:"_revinclude,omitempty"`
+	UnderscoreSort       *string   `form:"_sort,omitempty" json:"_sort,omitempty"`
+
+	// UnderscoreSummary Search response summary mode
+	UnderscoreSummary *SearchSummaryMode `form:"_summary,omitempty" json:"_summary,omitempty"`
+
+	// UnderscoreTotal Controls whether total count is included in search results
+	UnderscoreTotal      *SearchTotalMode  `form:"_total,omitempty" json:"_total,omitempty"`
+	AdditionalProperties map[string]string `json:"-"`
 }
-
-// SearchResourcesPostParamsResourceType defines parameters for SearchResourcesPost.
-type SearchResourcesPostParamsResourceType string
-
-// SearchResourcesPostFormdataBodySummary defines parameters for SearchResourcesPost.
-type SearchResourcesPostFormdataBodySummary string
-
-// SearchResourcesPostFormdataBodyTotal defines parameters for SearchResourcesPost.
-type SearchResourcesPostFormdataBodyTotal string
-
-// DeleteResourceParamsResourceType defines parameters for DeleteResource.
-type DeleteResourceParamsResourceType string
-
-// ReadResourceParamsResourceType defines parameters for ReadResource.
-type ReadResourceParamsResourceType string
 
 // PatchResourceParams defines parameters for PatchResource.
 type PatchResourceParams struct {
@@ -1001,17 +479,11 @@ type PatchResourceParams struct {
 	IfMatch *string `json:"If-Match,omitempty"`
 }
 
-// PatchResourceParamsResourceType defines parameters for PatchResource.
-type PatchResourceParamsResourceType string
-
 // UpdateResourceParams defines parameters for UpdateResource.
 type UpdateResourceParams struct {
 	// IfMatch Weak ETag for conditional update (format: W/"version")
 	IfMatch *string `json:"If-Match,omitempty"`
 }
-
-// UpdateResourceParamsResourceType defines parameters for UpdateResource.
-type UpdateResourceParamsResourceType string
 
 // GetResourceHistoryParams defines parameters for GetResourceHistory.
 type GetResourceHistoryParams struct {
@@ -1021,12 +493,6 @@ type GetResourceHistoryParams struct {
 	// UnderscoreOffset Offset for pagination
 	UnderscoreOffset *int `form:"_offset,omitempty" json:"_offset,omitempty"`
 }
-
-// GetResourceHistoryParamsResourceType defines parameters for GetResourceHistory.
-type GetResourceHistoryParamsResourceType string
-
-// ReadResourceVersionParamsResourceType defines parameters for ReadResourceVersion.
-type ReadResourceVersionParamsResourceType string
 
 // IssueTokenFormdataRequestBody defines body for IssueToken for application/x-www-form-urlencoded ContentType.
 type IssueTokenFormdataRequestBody IssueTokenFormdataBody
@@ -1371,53 +837,53 @@ type ClientInterface interface {
 	GetMetadata(ctx context.Context, tenantId TenantId, storeId StoreId, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ConditionalDeleteResource request
-	ConditionalDeleteResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ConditionalDeleteResourceParamsResourceType, params *ConditionalDeleteResourceParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ConditionalDeleteResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *ConditionalDeleteResourceParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// SearchResources request
-	SearchResources(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesParamsResourceType, params *SearchResourcesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	SearchResources(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *SearchResourcesParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// CreateResourceWithBody request with any body
-	CreateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, body CreateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, body CreateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	CreateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, body CreateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	CreateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, body CreateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ValidateResourceWithBody request with any body
-	ValidateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ValidateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	ValidateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, body ValidateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ValidateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body ValidateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	ValidateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, body ValidateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ValidateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body ValidateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// SearchResourcesPostWithBody request with any body
-	SearchResourcesPostWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesPostParamsResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	SearchResourcesPostWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	SearchResourcesPostWithFormdataBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesPostParamsResourceType, body SearchResourcesPostFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	SearchResourcesPostWithFormdataBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body SearchResourcesPostFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// DeleteResource request
-	DeleteResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType DeleteResourceParamsResourceType, id FhirId, reqEditors ...RequestEditorFn) (*http.Response, error)
+	DeleteResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ReadResource request
-	ReadResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ReadResourceParamsResourceType, id FhirId, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ReadResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// PatchResourceWithBody request with any body
-	PatchResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType PatchResourceParamsResourceType, id FhirId, params *PatchResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	PatchResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *PatchResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	PatchResourceWithApplicationJSONPatchPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType PatchResourceParamsResourceType, id FhirId, params *PatchResourceParams, body PatchResourceApplicationJSONPatchPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	PatchResourceWithApplicationJSONPatchPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *PatchResourceParams, body PatchResourceApplicationJSONPatchPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// UpdateResourceWithBody request with any body
-	UpdateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
-	UpdateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
+	UpdateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetResourceHistory request
-	GetResourceHistory(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType GetResourceHistoryParamsResourceType, id FhirId, params *GetResourceHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetResourceHistory(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *GetResourceHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// ReadResourceVersion request
-	ReadResourceVersion(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ReadResourceVersionParamsResourceType, id FhirId, versionId int, reqEditors ...RequestEditorFn) (*http.Response, error)
+	ReadResourceVersion(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, versionId int, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
 func (c *Client) GetHealth(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error) {
@@ -1600,7 +1066,7 @@ func (c *Client) GetMetadata(ctx context.Context, tenantId TenantId, storeId Sto
 	return c.Client.Do(req)
 }
 
-func (c *Client) ConditionalDeleteResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ConditionalDeleteResourceParamsResourceType, params *ConditionalDeleteResourceParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) ConditionalDeleteResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *ConditionalDeleteResourceParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewConditionalDeleteResourceRequest(c.Server, tenantId, storeId, resourceType, params)
 	if err != nil {
 		return nil, err
@@ -1612,7 +1078,7 @@ func (c *Client) ConditionalDeleteResource(ctx context.Context, tenantId TenantI
 	return c.Client.Do(req)
 }
 
-func (c *Client) SearchResources(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesParamsResourceType, params *SearchResourcesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) SearchResources(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *SearchResourcesParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchResourcesRequest(c.Server, tenantId, storeId, resourceType, params)
 	if err != nil {
 		return nil, err
@@ -1624,7 +1090,7 @@ func (c *Client) SearchResources(ctx context.Context, tenantId TenantId, storeId
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) CreateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateResourceRequestWithBody(c.Server, tenantId, storeId, resourceType, params, contentType, body)
 	if err != nil {
 		return nil, err
@@ -1636,7 +1102,7 @@ func (c *Client) CreateResourceWithBody(ctx context.Context, tenantId TenantId, 
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, body CreateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) CreateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, body CreateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateResourceRequestWithApplicationFhirPlusJSONBody(c.Server, tenantId, storeId, resourceType, params, body)
 	if err != nil {
 		return nil, err
@@ -1648,7 +1114,7 @@ func (c *Client) CreateResourceWithApplicationFhirPlusJSONBody(ctx context.Conte
 	return c.Client.Do(req)
 }
 
-func (c *Client) CreateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, body CreateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) CreateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, body CreateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewCreateResourceRequest(c.Server, tenantId, storeId, resourceType, params, body)
 	if err != nil {
 		return nil, err
@@ -1660,7 +1126,7 @@ func (c *Client) CreateResource(ctx context.Context, tenantId TenantId, storeId 
 	return c.Client.Do(req)
 }
 
-func (c *Client) ValidateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) ValidateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewValidateResourceRequestWithBody(c.Server, tenantId, storeId, resourceType, contentType, body)
 	if err != nil {
 		return nil, err
@@ -1672,7 +1138,7 @@ func (c *Client) ValidateResourceWithBody(ctx context.Context, tenantId TenantId
 	return c.Client.Do(req)
 }
 
-func (c *Client) ValidateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, body ValidateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) ValidateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body ValidateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewValidateResourceRequestWithApplicationFhirPlusJSONBody(c.Server, tenantId, storeId, resourceType, body)
 	if err != nil {
 		return nil, err
@@ -1684,7 +1150,7 @@ func (c *Client) ValidateResourceWithApplicationFhirPlusJSONBody(ctx context.Con
 	return c.Client.Do(req)
 }
 
-func (c *Client) ValidateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, body ValidateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) ValidateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body ValidateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewValidateResourceRequest(c.Server, tenantId, storeId, resourceType, body)
 	if err != nil {
 		return nil, err
@@ -1696,7 +1162,7 @@ func (c *Client) ValidateResource(ctx context.Context, tenantId TenantId, storeI
 	return c.Client.Do(req)
 }
 
-func (c *Client) SearchResourcesPostWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesPostParamsResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) SearchResourcesPostWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchResourcesPostRequestWithBody(c.Server, tenantId, storeId, resourceType, contentType, body)
 	if err != nil {
 		return nil, err
@@ -1708,7 +1174,7 @@ func (c *Client) SearchResourcesPostWithBody(ctx context.Context, tenantId Tenan
 	return c.Client.Do(req)
 }
 
-func (c *Client) SearchResourcesPostWithFormdataBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesPostParamsResourceType, body SearchResourcesPostFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) SearchResourcesPostWithFormdataBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body SearchResourcesPostFormdataRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewSearchResourcesPostRequestWithFormdataBody(c.Server, tenantId, storeId, resourceType, body)
 	if err != nil {
 		return nil, err
@@ -1720,7 +1186,7 @@ func (c *Client) SearchResourcesPostWithFormdataBody(ctx context.Context, tenant
 	return c.Client.Do(req)
 }
 
-func (c *Client) DeleteResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType DeleteResourceParamsResourceType, id FhirId, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) DeleteResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewDeleteResourceRequest(c.Server, tenantId, storeId, resourceType, id)
 	if err != nil {
 		return nil, err
@@ -1732,7 +1198,7 @@ func (c *Client) DeleteResource(ctx context.Context, tenantId TenantId, storeId 
 	return c.Client.Do(req)
 }
 
-func (c *Client) ReadResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ReadResourceParamsResourceType, id FhirId, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) ReadResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewReadResourceRequest(c.Server, tenantId, storeId, resourceType, id)
 	if err != nil {
 		return nil, err
@@ -1744,7 +1210,7 @@ func (c *Client) ReadResource(ctx context.Context, tenantId TenantId, storeId St
 	return c.Client.Do(req)
 }
 
-func (c *Client) PatchResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType PatchResourceParamsResourceType, id FhirId, params *PatchResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) PatchResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *PatchResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPatchResourceRequestWithBody(c.Server, tenantId, storeId, resourceType, id, params, contentType, body)
 	if err != nil {
 		return nil, err
@@ -1756,7 +1222,7 @@ func (c *Client) PatchResourceWithBody(ctx context.Context, tenantId TenantId, s
 	return c.Client.Do(req)
 }
 
-func (c *Client) PatchResourceWithApplicationJSONPatchPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType PatchResourceParamsResourceType, id FhirId, params *PatchResourceParams, body PatchResourceApplicationJSONPatchPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) PatchResourceWithApplicationJSONPatchPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *PatchResourceParams, body PatchResourceApplicationJSONPatchPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewPatchResourceRequestWithApplicationJSONPatchPlusJSONBody(c.Server, tenantId, storeId, resourceType, id, params, body)
 	if err != nil {
 		return nil, err
@@ -1768,7 +1234,7 @@ func (c *Client) PatchResourceWithApplicationJSONPatchPlusJSONBody(ctx context.C
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) UpdateResourceWithBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateResourceRequestWithBody(c.Server, tenantId, storeId, resourceType, id, params, contentType, body)
 	if err != nil {
 		return nil, err
@@ -1780,7 +1246,7 @@ func (c *Client) UpdateResourceWithBody(ctx context.Context, tenantId TenantId, 
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) UpdateResourceWithApplicationFhirPlusJSONBody(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateResourceRequestWithApplicationFhirPlusJSONBody(c.Server, tenantId, storeId, resourceType, id, params, body)
 	if err != nil {
 		return nil, err
@@ -1792,7 +1258,7 @@ func (c *Client) UpdateResourceWithApplicationFhirPlusJSONBody(ctx context.Conte
 	return c.Client.Do(req)
 }
 
-func (c *Client) UpdateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) UpdateResource(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewUpdateResourceRequest(c.Server, tenantId, storeId, resourceType, id, params, body)
 	if err != nil {
 		return nil, err
@@ -1804,7 +1270,7 @@ func (c *Client) UpdateResource(ctx context.Context, tenantId TenantId, storeId 
 	return c.Client.Do(req)
 }
 
-func (c *Client) GetResourceHistory(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType GetResourceHistoryParamsResourceType, id FhirId, params *GetResourceHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) GetResourceHistory(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *GetResourceHistoryParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewGetResourceHistoryRequest(c.Server, tenantId, storeId, resourceType, id, params)
 	if err != nil {
 		return nil, err
@@ -1816,7 +1282,7 @@ func (c *Client) GetResourceHistory(ctx context.Context, tenantId TenantId, stor
 	return c.Client.Do(req)
 }
 
-func (c *Client) ReadResourceVersion(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ReadResourceVersionParamsResourceType, id FhirId, versionId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
+func (c *Client) ReadResourceVersion(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, versionId int, reqEditors ...RequestEditorFn) (*http.Response, error) {
 	req, err := NewReadResourceVersionRequest(c.Server, tenantId, storeId, resourceType, id, versionId)
 	if err != nil {
 		return nil, err
@@ -2317,7 +1783,7 @@ func NewGetMetadataRequest(server string, tenantId TenantId, storeId StoreId) (*
 }
 
 // NewConditionalDeleteResourceRequest generates requests for ConditionalDeleteResource
-func NewConditionalDeleteResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType ConditionalDeleteResourceParamsResourceType, params *ConditionalDeleteResourceParams) (*http.Request, error) {
+func NewConditionalDeleteResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *ConditionalDeleteResourceParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2419,7 +1885,7 @@ func NewConditionalDeleteResourceRequest(server string, tenantId TenantId, store
 }
 
 // NewSearchResourcesRequest generates requests for SearchResources
-func NewSearchResourcesRequest(server string, tenantId TenantId, storeId StoreId, resourceType SearchResourcesParamsResourceType, params *SearchResourcesParams) (*http.Request, error) {
+func NewSearchResourcesRequest(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *SearchResourcesParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2617,7 +2083,7 @@ func NewSearchResourcesRequest(server string, tenantId TenantId, storeId StoreId
 }
 
 // NewCreateResourceRequestWithApplicationFhirPlusJSONBody calls the generic CreateResource builder with application/fhir+json body
-func NewCreateResourceRequestWithApplicationFhirPlusJSONBody(server string, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, body CreateResourceApplicationFhirPlusJSONRequestBody) (*http.Request, error) {
+func NewCreateResourceRequestWithApplicationFhirPlusJSONBody(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, body CreateResourceApplicationFhirPlusJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -2628,7 +2094,7 @@ func NewCreateResourceRequestWithApplicationFhirPlusJSONBody(server string, tena
 }
 
 // NewCreateResourceRequest calls the generic CreateResource builder with application/json body
-func NewCreateResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, body CreateResourceJSONRequestBody) (*http.Request, error) {
+func NewCreateResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, body CreateResourceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -2639,7 +2105,7 @@ func NewCreateResourceRequest(server string, tenantId TenantId, storeId StoreId,
 }
 
 // NewCreateResourceRequestWithBody generates requests for CreateResource with any type of body
-func NewCreateResourceRequestWithBody(server string, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, contentType string, body io.Reader) (*http.Request, error) {
+func NewCreateResourceRequestWithBody(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2704,7 +2170,7 @@ func NewCreateResourceRequestWithBody(server string, tenantId TenantId, storeId 
 }
 
 // NewValidateResourceRequestWithApplicationFhirPlusJSONBody calls the generic ValidateResource builder with application/fhir+json body
-func NewValidateResourceRequestWithApplicationFhirPlusJSONBody(server string, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, body ValidateResourceApplicationFhirPlusJSONRequestBody) (*http.Request, error) {
+func NewValidateResourceRequestWithApplicationFhirPlusJSONBody(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, body ValidateResourceApplicationFhirPlusJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -2715,7 +2181,7 @@ func NewValidateResourceRequestWithApplicationFhirPlusJSONBody(server string, te
 }
 
 // NewValidateResourceRequest calls the generic ValidateResource builder with application/json body
-func NewValidateResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, body ValidateResourceJSONRequestBody) (*http.Request, error) {
+func NewValidateResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, body ValidateResourceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -2726,7 +2192,7 @@ func NewValidateResourceRequest(server string, tenantId TenantId, storeId StoreI
 }
 
 // NewValidateResourceRequestWithBody generates requests for ValidateResource with any type of body
-func NewValidateResourceRequestWithBody(server string, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, contentType string, body io.Reader) (*http.Request, error) {
+func NewValidateResourceRequestWithBody(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2776,7 +2242,7 @@ func NewValidateResourceRequestWithBody(server string, tenantId TenantId, storeI
 }
 
 // NewSearchResourcesPostRequestWithFormdataBody calls the generic SearchResourcesPost builder with application/x-www-form-urlencoded body
-func NewSearchResourcesPostRequestWithFormdataBody(server string, tenantId TenantId, storeId StoreId, resourceType SearchResourcesPostParamsResourceType, body SearchResourcesPostFormdataRequestBody) (*http.Request, error) {
+func NewSearchResourcesPostRequestWithFormdataBody(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, body SearchResourcesPostFormdataRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	bodyStr, err := runtime.MarshalForm(body, nil)
 	if err != nil {
@@ -2787,7 +2253,7 @@ func NewSearchResourcesPostRequestWithFormdataBody(server string, tenantId Tenan
 }
 
 // NewSearchResourcesPostRequestWithBody generates requests for SearchResourcesPost with any type of body
-func NewSearchResourcesPostRequestWithBody(server string, tenantId TenantId, storeId StoreId, resourceType SearchResourcesPostParamsResourceType, contentType string, body io.Reader) (*http.Request, error) {
+func NewSearchResourcesPostRequestWithBody(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2837,7 +2303,7 @@ func NewSearchResourcesPostRequestWithBody(server string, tenantId TenantId, sto
 }
 
 // NewDeleteResourceRequest generates requests for DeleteResource
-func NewDeleteResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType DeleteResourceParamsResourceType, id FhirId) (*http.Request, error) {
+func NewDeleteResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2892,7 +2358,7 @@ func NewDeleteResourceRequest(server string, tenantId TenantId, storeId StoreId,
 }
 
 // NewReadResourceRequest generates requests for ReadResource
-func NewReadResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType ReadResourceParamsResourceType, id FhirId) (*http.Request, error) {
+func NewReadResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -2947,7 +2413,7 @@ func NewReadResourceRequest(server string, tenantId TenantId, storeId StoreId, r
 }
 
 // NewPatchResourceRequestWithApplicationJSONPatchPlusJSONBody calls the generic PatchResource builder with application/json-patch+json body
-func NewPatchResourceRequestWithApplicationJSONPatchPlusJSONBody(server string, tenantId TenantId, storeId StoreId, resourceType PatchResourceParamsResourceType, id FhirId, params *PatchResourceParams, body PatchResourceApplicationJSONPatchPlusJSONRequestBody) (*http.Request, error) {
+func NewPatchResourceRequestWithApplicationJSONPatchPlusJSONBody(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *PatchResourceParams, body PatchResourceApplicationJSONPatchPlusJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -2958,7 +2424,7 @@ func NewPatchResourceRequestWithApplicationJSONPatchPlusJSONBody(server string, 
 }
 
 // NewPatchResourceRequestWithBody generates requests for PatchResource with any type of body
-func NewPatchResourceRequestWithBody(server string, tenantId TenantId, storeId StoreId, resourceType PatchResourceParamsResourceType, id FhirId, params *PatchResourceParams, contentType string, body io.Reader) (*http.Request, error) {
+func NewPatchResourceRequestWithBody(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *PatchResourceParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -3030,7 +2496,7 @@ func NewPatchResourceRequestWithBody(server string, tenantId TenantId, storeId S
 }
 
 // NewUpdateResourceRequestWithApplicationFhirPlusJSONBody calls the generic UpdateResource builder with application/fhir+json body
-func NewUpdateResourceRequestWithApplicationFhirPlusJSONBody(server string, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceApplicationFhirPlusJSONRequestBody) (*http.Request, error) {
+func NewUpdateResourceRequestWithApplicationFhirPlusJSONBody(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceApplicationFhirPlusJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -3041,7 +2507,7 @@ func NewUpdateResourceRequestWithApplicationFhirPlusJSONBody(server string, tena
 }
 
 // NewUpdateResourceRequest calls the generic UpdateResource builder with application/json body
-func NewUpdateResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceJSONRequestBody) (*http.Request, error) {
+func NewUpdateResourceRequest(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceJSONRequestBody) (*http.Request, error) {
 	var bodyReader io.Reader
 	buf, err := json.Marshal(body)
 	if err != nil {
@@ -3052,7 +2518,7 @@ func NewUpdateResourceRequest(server string, tenantId TenantId, storeId StoreId,
 }
 
 // NewUpdateResourceRequestWithBody generates requests for UpdateResource with any type of body
-func NewUpdateResourceRequestWithBody(server string, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, contentType string, body io.Reader) (*http.Request, error) {
+func NewUpdateResourceRequestWithBody(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, contentType string, body io.Reader) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -3124,7 +2590,7 @@ func NewUpdateResourceRequestWithBody(server string, tenantId TenantId, storeId 
 }
 
 // NewGetResourceHistoryRequest generates requests for GetResourceHistory
-func NewGetResourceHistoryRequest(server string, tenantId TenantId, storeId StoreId, resourceType GetResourceHistoryParamsResourceType, id FhirId, params *GetResourceHistoryParams) (*http.Request, error) {
+func NewGetResourceHistoryRequest(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *GetResourceHistoryParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -3217,7 +2683,7 @@ func NewGetResourceHistoryRequest(server string, tenantId TenantId, storeId Stor
 }
 
 // NewReadResourceVersionRequest generates requests for ReadResourceVersion
-func NewReadResourceVersionRequest(server string, tenantId TenantId, storeId StoreId, resourceType ReadResourceVersionParamsResourceType, id FhirId, versionId int) (*http.Request, error) {
+func NewReadResourceVersionRequest(server string, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, versionId int) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -3361,53 +2827,53 @@ type ClientWithResponsesInterface interface {
 	GetMetadataWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, reqEditors ...RequestEditorFn) (*GetMetadataResponse, error)
 
 	// ConditionalDeleteResourceWithResponse request
-	ConditionalDeleteResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ConditionalDeleteResourceParamsResourceType, params *ConditionalDeleteResourceParams, reqEditors ...RequestEditorFn) (*ConditionalDeleteResourceResponse, error)
+	ConditionalDeleteResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *ConditionalDeleteResourceParams, reqEditors ...RequestEditorFn) (*ConditionalDeleteResourceResponse, error)
 
 	// SearchResourcesWithResponse request
-	SearchResourcesWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesParamsResourceType, params *SearchResourcesParams, reqEditors ...RequestEditorFn) (*SearchResourcesResponse, error)
+	SearchResourcesWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *SearchResourcesParams, reqEditors ...RequestEditorFn) (*SearchResourcesResponse, error)
 
 	// CreateResourceWithBodyWithResponse request with any body
-	CreateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error)
+	CreateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error)
 
-	CreateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, body CreateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error)
+	CreateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, body CreateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error)
 
-	CreateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, body CreateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error)
+	CreateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, body CreateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error)
 
 	// ValidateResourceWithBodyWithResponse request with any body
-	ValidateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error)
+	ValidateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error)
 
-	ValidateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, body ValidateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error)
+	ValidateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body ValidateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error)
 
-	ValidateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, body ValidateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error)
+	ValidateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body ValidateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error)
 
 	// SearchResourcesPostWithBodyWithResponse request with any body
-	SearchResourcesPostWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesPostParamsResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SearchResourcesPostResponse, error)
+	SearchResourcesPostWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SearchResourcesPostResponse, error)
 
-	SearchResourcesPostWithFormdataBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesPostParamsResourceType, body SearchResourcesPostFormdataRequestBody, reqEditors ...RequestEditorFn) (*SearchResourcesPostResponse, error)
+	SearchResourcesPostWithFormdataBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body SearchResourcesPostFormdataRequestBody, reqEditors ...RequestEditorFn) (*SearchResourcesPostResponse, error)
 
 	// DeleteResourceWithResponse request
-	DeleteResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType DeleteResourceParamsResourceType, id FhirId, reqEditors ...RequestEditorFn) (*DeleteResourceResponse, error)
+	DeleteResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, reqEditors ...RequestEditorFn) (*DeleteResourceResponse, error)
 
 	// ReadResourceWithResponse request
-	ReadResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ReadResourceParamsResourceType, id FhirId, reqEditors ...RequestEditorFn) (*ReadResourceResponse, error)
+	ReadResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, reqEditors ...RequestEditorFn) (*ReadResourceResponse, error)
 
 	// PatchResourceWithBodyWithResponse request with any body
-	PatchResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType PatchResourceParamsResourceType, id FhirId, params *PatchResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PatchResourceResponse, error)
+	PatchResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *PatchResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PatchResourceResponse, error)
 
-	PatchResourceWithApplicationJSONPatchPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType PatchResourceParamsResourceType, id FhirId, params *PatchResourceParams, body PatchResourceApplicationJSONPatchPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*PatchResourceResponse, error)
+	PatchResourceWithApplicationJSONPatchPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *PatchResourceParams, body PatchResourceApplicationJSONPatchPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*PatchResourceResponse, error)
 
 	// UpdateResourceWithBodyWithResponse request with any body
-	UpdateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error)
+	UpdateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error)
 
-	UpdateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error)
+	UpdateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error)
 
-	UpdateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error)
+	UpdateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error)
 
 	// GetResourceHistoryWithResponse request
-	GetResourceHistoryWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType GetResourceHistoryParamsResourceType, id FhirId, params *GetResourceHistoryParams, reqEditors ...RequestEditorFn) (*GetResourceHistoryResponse, error)
+	GetResourceHistoryWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *GetResourceHistoryParams, reqEditors ...RequestEditorFn) (*GetResourceHistoryResponse, error)
 
 	// ReadResourceVersionWithResponse request
-	ReadResourceVersionWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ReadResourceVersionParamsResourceType, id FhirId, versionId int, reqEditors ...RequestEditorFn) (*ReadResourceVersionResponse, error)
+	ReadResourceVersionWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, versionId int, reqEditors ...RequestEditorFn) (*ReadResourceVersionResponse, error)
 }
 
 type GetHealthResponse struct {
@@ -4026,7 +3492,7 @@ func (c *ClientWithResponses) GetMetadataWithResponse(ctx context.Context, tenan
 }
 
 // ConditionalDeleteResourceWithResponse request returning *ConditionalDeleteResourceResponse
-func (c *ClientWithResponses) ConditionalDeleteResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ConditionalDeleteResourceParamsResourceType, params *ConditionalDeleteResourceParams, reqEditors ...RequestEditorFn) (*ConditionalDeleteResourceResponse, error) {
+func (c *ClientWithResponses) ConditionalDeleteResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *ConditionalDeleteResourceParams, reqEditors ...RequestEditorFn) (*ConditionalDeleteResourceResponse, error) {
 	rsp, err := c.ConditionalDeleteResource(ctx, tenantId, storeId, resourceType, params, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4035,7 +3501,7 @@ func (c *ClientWithResponses) ConditionalDeleteResourceWithResponse(ctx context.
 }
 
 // SearchResourcesWithResponse request returning *SearchResourcesResponse
-func (c *ClientWithResponses) SearchResourcesWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesParamsResourceType, params *SearchResourcesParams, reqEditors ...RequestEditorFn) (*SearchResourcesResponse, error) {
+func (c *ClientWithResponses) SearchResourcesWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *SearchResourcesParams, reqEditors ...RequestEditorFn) (*SearchResourcesResponse, error) {
 	rsp, err := c.SearchResources(ctx, tenantId, storeId, resourceType, params, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4044,7 +3510,7 @@ func (c *ClientWithResponses) SearchResourcesWithResponse(ctx context.Context, t
 }
 
 // CreateResourceWithBodyWithResponse request with arbitrary body returning *CreateResourceResponse
-func (c *ClientWithResponses) CreateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error) {
+func (c *ClientWithResponses) CreateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error) {
 	rsp, err := c.CreateResourceWithBody(ctx, tenantId, storeId, resourceType, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4052,7 +3518,7 @@ func (c *ClientWithResponses) CreateResourceWithBodyWithResponse(ctx context.Con
 	return ParseCreateResourceResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, body CreateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error) {
+func (c *ClientWithResponses) CreateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, body CreateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error) {
 	rsp, err := c.CreateResourceWithApplicationFhirPlusJSONBody(ctx, tenantId, storeId, resourceType, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4060,7 +3526,7 @@ func (c *ClientWithResponses) CreateResourceWithApplicationFhirPlusJSONBodyWithR
 	return ParseCreateResourceResponse(rsp)
 }
 
-func (c *ClientWithResponses) CreateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType CreateResourceParamsResourceType, params *CreateResourceParams, body CreateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error) {
+func (c *ClientWithResponses) CreateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, params *CreateResourceParams, body CreateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*CreateResourceResponse, error) {
 	rsp, err := c.CreateResource(ctx, tenantId, storeId, resourceType, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4069,7 +3535,7 @@ func (c *ClientWithResponses) CreateResourceWithResponse(ctx context.Context, te
 }
 
 // ValidateResourceWithBodyWithResponse request with arbitrary body returning *ValidateResourceResponse
-func (c *ClientWithResponses) ValidateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error) {
+func (c *ClientWithResponses) ValidateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error) {
 	rsp, err := c.ValidateResourceWithBody(ctx, tenantId, storeId, resourceType, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4077,7 +3543,7 @@ func (c *ClientWithResponses) ValidateResourceWithBodyWithResponse(ctx context.C
 	return ParseValidateResourceResponse(rsp)
 }
 
-func (c *ClientWithResponses) ValidateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, body ValidateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error) {
+func (c *ClientWithResponses) ValidateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body ValidateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error) {
 	rsp, err := c.ValidateResourceWithApplicationFhirPlusJSONBody(ctx, tenantId, storeId, resourceType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4085,7 +3551,7 @@ func (c *ClientWithResponses) ValidateResourceWithApplicationFhirPlusJSONBodyWit
 	return ParseValidateResourceResponse(rsp)
 }
 
-func (c *ClientWithResponses) ValidateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ValidateResourceParamsResourceType, body ValidateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error) {
+func (c *ClientWithResponses) ValidateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body ValidateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*ValidateResourceResponse, error) {
 	rsp, err := c.ValidateResource(ctx, tenantId, storeId, resourceType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4094,7 +3560,7 @@ func (c *ClientWithResponses) ValidateResourceWithResponse(ctx context.Context, 
 }
 
 // SearchResourcesPostWithBodyWithResponse request with arbitrary body returning *SearchResourcesPostResponse
-func (c *ClientWithResponses) SearchResourcesPostWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesPostParamsResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SearchResourcesPostResponse, error) {
+func (c *ClientWithResponses) SearchResourcesPostWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*SearchResourcesPostResponse, error) {
 	rsp, err := c.SearchResourcesPostWithBody(ctx, tenantId, storeId, resourceType, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4102,7 +3568,7 @@ func (c *ClientWithResponses) SearchResourcesPostWithBodyWithResponse(ctx contex
 	return ParseSearchResourcesPostResponse(rsp)
 }
 
-func (c *ClientWithResponses) SearchResourcesPostWithFormdataBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType SearchResourcesPostParamsResourceType, body SearchResourcesPostFormdataRequestBody, reqEditors ...RequestEditorFn) (*SearchResourcesPostResponse, error) {
+func (c *ClientWithResponses) SearchResourcesPostWithFormdataBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, body SearchResourcesPostFormdataRequestBody, reqEditors ...RequestEditorFn) (*SearchResourcesPostResponse, error) {
 	rsp, err := c.SearchResourcesPostWithFormdataBody(ctx, tenantId, storeId, resourceType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4111,7 +3577,7 @@ func (c *ClientWithResponses) SearchResourcesPostWithFormdataBodyWithResponse(ct
 }
 
 // DeleteResourceWithResponse request returning *DeleteResourceResponse
-func (c *ClientWithResponses) DeleteResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType DeleteResourceParamsResourceType, id FhirId, reqEditors ...RequestEditorFn) (*DeleteResourceResponse, error) {
+func (c *ClientWithResponses) DeleteResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, reqEditors ...RequestEditorFn) (*DeleteResourceResponse, error) {
 	rsp, err := c.DeleteResource(ctx, tenantId, storeId, resourceType, id, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4120,7 +3586,7 @@ func (c *ClientWithResponses) DeleteResourceWithResponse(ctx context.Context, te
 }
 
 // ReadResourceWithResponse request returning *ReadResourceResponse
-func (c *ClientWithResponses) ReadResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ReadResourceParamsResourceType, id FhirId, reqEditors ...RequestEditorFn) (*ReadResourceResponse, error) {
+func (c *ClientWithResponses) ReadResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, reqEditors ...RequestEditorFn) (*ReadResourceResponse, error) {
 	rsp, err := c.ReadResource(ctx, tenantId, storeId, resourceType, id, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4129,7 +3595,7 @@ func (c *ClientWithResponses) ReadResourceWithResponse(ctx context.Context, tena
 }
 
 // PatchResourceWithBodyWithResponse request with arbitrary body returning *PatchResourceResponse
-func (c *ClientWithResponses) PatchResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType PatchResourceParamsResourceType, id FhirId, params *PatchResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PatchResourceResponse, error) {
+func (c *ClientWithResponses) PatchResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *PatchResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*PatchResourceResponse, error) {
 	rsp, err := c.PatchResourceWithBody(ctx, tenantId, storeId, resourceType, id, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4137,7 +3603,7 @@ func (c *ClientWithResponses) PatchResourceWithBodyWithResponse(ctx context.Cont
 	return ParsePatchResourceResponse(rsp)
 }
 
-func (c *ClientWithResponses) PatchResourceWithApplicationJSONPatchPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType PatchResourceParamsResourceType, id FhirId, params *PatchResourceParams, body PatchResourceApplicationJSONPatchPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*PatchResourceResponse, error) {
+func (c *ClientWithResponses) PatchResourceWithApplicationJSONPatchPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *PatchResourceParams, body PatchResourceApplicationJSONPatchPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*PatchResourceResponse, error) {
 	rsp, err := c.PatchResourceWithApplicationJSONPatchPlusJSONBody(ctx, tenantId, storeId, resourceType, id, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4146,7 +3612,7 @@ func (c *ClientWithResponses) PatchResourceWithApplicationJSONPatchPlusJSONBodyW
 }
 
 // UpdateResourceWithBodyWithResponse request with arbitrary body returning *UpdateResourceResponse
-func (c *ClientWithResponses) UpdateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error) {
+func (c *ClientWithResponses) UpdateResourceWithBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, contentType string, body io.Reader, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error) {
 	rsp, err := c.UpdateResourceWithBody(ctx, tenantId, storeId, resourceType, id, params, contentType, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4154,7 +3620,7 @@ func (c *ClientWithResponses) UpdateResourceWithBodyWithResponse(ctx context.Con
 	return ParseUpdateResourceResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error) {
+func (c *ClientWithResponses) UpdateResourceWithApplicationFhirPlusJSONBodyWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceApplicationFhirPlusJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error) {
 	rsp, err := c.UpdateResourceWithApplicationFhirPlusJSONBody(ctx, tenantId, storeId, resourceType, id, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4162,7 +3628,7 @@ func (c *ClientWithResponses) UpdateResourceWithApplicationFhirPlusJSONBodyWithR
 	return ParseUpdateResourceResponse(rsp)
 }
 
-func (c *ClientWithResponses) UpdateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType UpdateResourceParamsResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error) {
+func (c *ClientWithResponses) UpdateResourceWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *UpdateResourceParams, body UpdateResourceJSONRequestBody, reqEditors ...RequestEditorFn) (*UpdateResourceResponse, error) {
 	rsp, err := c.UpdateResource(ctx, tenantId, storeId, resourceType, id, params, body, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4171,7 +3637,7 @@ func (c *ClientWithResponses) UpdateResourceWithResponse(ctx context.Context, te
 }
 
 // GetResourceHistoryWithResponse request returning *GetResourceHistoryResponse
-func (c *ClientWithResponses) GetResourceHistoryWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType GetResourceHistoryParamsResourceType, id FhirId, params *GetResourceHistoryParams, reqEditors ...RequestEditorFn) (*GetResourceHistoryResponse, error) {
+func (c *ClientWithResponses) GetResourceHistoryWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, params *GetResourceHistoryParams, reqEditors ...RequestEditorFn) (*GetResourceHistoryResponse, error) {
 	rsp, err := c.GetResourceHistory(ctx, tenantId, storeId, resourceType, id, params, reqEditors...)
 	if err != nil {
 		return nil, err
@@ -4180,7 +3646,7 @@ func (c *ClientWithResponses) GetResourceHistoryWithResponse(ctx context.Context
 }
 
 // ReadResourceVersionWithResponse request returning *ReadResourceVersionResponse
-func (c *ClientWithResponses) ReadResourceVersionWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ReadResourceVersionParamsResourceType, id FhirId, versionId int, reqEditors ...RequestEditorFn) (*ReadResourceVersionResponse, error) {
+func (c *ClientWithResponses) ReadResourceVersionWithResponse(ctx context.Context, tenantId TenantId, storeId StoreId, resourceType ResourceType, id FhirId, versionId int, reqEditors ...RequestEditorFn) (*ReadResourceVersionResponse, error) {
 	rsp, err := c.ReadResourceVersion(ctx, tenantId, storeId, resourceType, id, versionId, reqEditors...)
 	if err != nil {
 		return nil, err
