@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.1.0...v0.1.1) (2026-04-13)
+
+
+### Bug Fixes
+
+* make client_id and client_secret optional for HTTP Basic auth ([#18](https://github.com/PhenoML/phenostore-sdk-go/issues/18)) ([7de9e22](https://github.com/PhenoML/phenostore-sdk-go/commit/7de9e22aaf8f8559cafc7a3d5c66bf6cc41abebb))
+
 ## [0.1.0](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.0.3...v0.1.0) (2026-02-28)
 
 
