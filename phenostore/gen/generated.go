@@ -365,8 +365,11 @@ type TenantId = string
 
 // IssueTokenFormdataBody defines parameters for IssueToken.
 type IssueTokenFormdataBody struct {
-	ClientId     string                          `form:"client_id" json:"client_id"`
-	ClientSecret string                          `form:"client_secret" json:"client_secret"`
+	// ClientId Required when credentials are not sent via HTTP Basic auth.
+	ClientId *string `form:"client_id,omitempty" json:"client_id,omitempty"`
+
+	// ClientSecret Required when credentials are not sent via HTTP Basic auth.
+	ClientSecret *string                         `form:"client_secret,omitempty" json:"client_secret,omitempty"`
 	GrantType    IssueTokenFormdataBodyGrantType `form:"grant_type" json:"grant_type"`
 
 	// Scope Space-delimited list of requested scopes (subset of granted permissions)
