@@ -392,10 +392,16 @@ type GetDocrefParams struct {
 
 	// Type Document type (CodeableConcept token)
 	Type *string `form:"type,omitempty" json:"type,omitempty"`
+
+	// UnderscoreTotal Controls whether total count is included in results
+	UnderscoreTotal *SearchTotal `form:"_total,omitempty" json:"_total,omitempty"`
 }
 
 // PostDocrefFormdataBody defines parameters for PostDocref.
 type PostDocrefFormdataBody struct {
+	// UnderscoreTotal Controls whether total count is included in search results
+	UnderscoreTotal *SearchTotalMode `form:"_total,omitempty" json:"_total,omitempty"`
+
 	// End Period end date
 	End *openapi_types.Date `form:"end,omitempty" json:"end,omitempty"`
 
@@ -1666,6 +1672,22 @@ func NewGetDocrefRequest(server string, tenantId TenantId, storeId StoreId, para
 		if params.Type != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "type", runtime.ParamLocationQuery, *params.Type); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.UnderscoreTotal != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "_total", runtime.ParamLocationQuery, *params.UnderscoreTotal); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err

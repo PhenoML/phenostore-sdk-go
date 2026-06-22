@@ -280,6 +280,7 @@ paths:
           schema:
             type: string
           description: Document type (CodeableConcept token)
+        - $ref: "#/components/parameters/searchTotal"
       responses:
         "200":
           description: Search results Bundle
@@ -328,6 +329,8 @@ paths:
                 type:
                   type: string
                   description: Document type (CodeableConcept token)
+                _total:
+                  $ref: "#/components/schemas/SearchTotalMode"
       responses:
         "200":
           description: Search results Bundle
