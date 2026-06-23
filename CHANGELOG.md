@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.2](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.1.1...v0.1.2) (2026-06-23)
+
+
+### Features
+
+* add _total parameter to docref search endpoints ([#21](https://github.com/PhenoML/phenostore-sdk-go/issues/21)) ([3d02efd](https://github.com/PhenoML/phenostore-sdk-go/commit/3d02efd796de4c6824b0b076d0f74c81a30355ce))
+
 ## [0.1.1](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.1.0...v0.1.1) (2026-04-13)
 
 
