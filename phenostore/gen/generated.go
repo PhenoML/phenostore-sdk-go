@@ -300,7 +300,7 @@ type ResourceType string
 // SearchSummaryMode Search response summary mode
 type SearchSummaryMode string
 
-// SearchTotalMode Controls whether total count is included in search results
+// SearchTotalMode FHIR `_total` mode controlling whether a result total is returned. These are the three values defined by FHIR R4. `estimate` is accepted but currently behaves like `none` (no total is emitted).
 type SearchTotalMode string
 
 // SmartConfiguration defines model for SmartConfiguration.
@@ -354,7 +354,7 @@ type SearchSort = string
 // SearchSummary Search response summary mode
 type SearchSummary = SearchSummaryMode
 
-// SearchTotal Controls whether total count is included in search results
+// SearchTotal FHIR `_total` mode controlling whether a result total is returned. These are the three values defined by FHIR R4. `estimate` is accepted but currently behaves like `none` (no total is emitted).
 type SearchTotal = SearchTotalMode
 
 // StoreId defines model for storeId.
@@ -392,10 +392,16 @@ type GetDocrefParams struct {
 
 	// Type Document type (CodeableConcept token)
 	Type *string `form:"type,omitempty" json:"type,omitempty"`
+
+	// UnderscoreTotal Controls whether `Bundle.total` is included. Defaults to omitting the total. `accurate` returns an exact total via a separate count query (which can be costly on broad searches) and is omitted on cursor-paginated pages; `none` omits the total. `estimate` is accepted but currently behaves like `none` (no approximate total is emitted).
+	UnderscoreTotal *SearchTotal `form:"_total,omitempty" json:"_total,omitempty"`
 }
 
 // PostDocrefFormdataBody defines parameters for PostDocref.
 type PostDocrefFormdataBody struct {
+	// UnderscoreTotal FHIR `_total` mode controlling whether a result total is returned. These are the three values defined by FHIR R4. `estimate` is accepted but currently behaves like `none` (no total is emitted).
+	UnderscoreTotal *SearchTotalMode `form:"_total,omitempty" json:"_total,omitempty"`
+
 	// End Period end date
 	End *openapi_types.Date `form:"end,omitempty" json:"end,omitempty"`
 
@@ -423,25 +429,25 @@ type ConditionalDeleteResourceParams struct {
 
 // SearchResourcesParams defines parameters for SearchResources.
 type SearchResourcesParams struct {
-	// UnderscoreCount Page size (max 1000)
+	// UnderscoreCount Page size, clamped to 1–1000; non-positive values are ignored and the default (20) applies. `_count=0` is not treated as a count-only request — use `_summary=count` for that.
 	UnderscoreCount *SearchCount `form:"_count,omitempty" json:"_count,omitempty"`
 
-	// UnderscoreOffset Offset for offset-based pagination
+	// UnderscoreOffset Start position for offset-based pagination, clamped to 0–10000. `next` links use `_offset` only for `_sort`ed searches; it is ignored when `_cursor` is present.
 	UnderscoreOffset *SearchOffset `form:"_offset,omitempty" json:"_offset,omitempty"`
 
-	// UnderscoreCursor Opaque cursor for keyset pagination
+	// UnderscoreCursor Opaque keyset cursor for the default pagination mode. Obtain it from a bundle's `next` link rather than constructing it; cannot be combined with `_sort`.
 	UnderscoreCursor *SearchCursor `form:"_cursor,omitempty" json:"_cursor,omitempty"`
 
-	// UnderscoreTotal Controls whether total count is included in results
+	// UnderscoreTotal Controls whether `Bundle.total` is included. Defaults to omitting the total. `accurate` returns an exact total via a separate count query (which can be costly on broad searches) and is omitted on cursor-paginated pages; `none` omits the total. `estimate` is accepted but currently behaves like `none` (no approximate total is emitted).
 	UnderscoreTotal *SearchTotal `form:"_total,omitempty" json:"_total,omitempty"`
 
-	// UnderscoreSummary Response summary mode
+	// UnderscoreSummary Response shaping mode. `true` keeps summary elements, `text` keeps only text/id/meta, `data` drops the narrative, `false` returns everything, and `count` returns only `Bundle.total` with no entries. Cannot be combined with `_elements`.
 	UnderscoreSummary *SearchSummary `form:"_summary,omitempty" json:"_summary,omitempty"`
 
-	// UnderscoreElements Comma-separated list of element names to include
+	// UnderscoreElements Comma-separated list of element names to keep in returned resources. Cannot be combined with `_summary`.
 	UnderscoreElements *SearchElements `form:"_elements,omitempty" json:"_elements,omitempty"`
 
-	// UnderscoreSort Comma-separated sort fields (prefix with - for descending)
+	// UnderscoreSort Comma-separated sort fields, each optionally prefixed with `-` for descending order. Sorted searches use offset-based pagination, so `_sort` cannot be combined with `_cursor`.
 	UnderscoreSort *SearchSort `form:"_sort,omitempty" json:"_sort,omitempty"`
 
 	// UnderscoreInclude Include referenced resources (format: ResourceType:param[:targetType]). Repeatable.
@@ -471,7 +477,7 @@ type SearchResourcesPostFormdataBody struct {
 	// UnderscoreSummary Search response summary mode
 	UnderscoreSummary *SearchSummaryMode `form:"_summary,omitempty" json:"_summary,omitempty"`
 
-	// UnderscoreTotal Controls whether total count is included in search results
+	// UnderscoreTotal FHIR `_total` mode controlling whether a result total is returned. These are the three values defined by FHIR R4. `estimate` is accepted but currently behaves like `none` (no total is emitted).
 	UnderscoreTotal      *SearchTotalMode  `form:"_total,omitempty" json:"_total,omitempty"`
 	AdditionalProperties map[string]string `json:"-"`
 }
@@ -1666,6 +1672,22 @@ func NewGetDocrefRequest(server string, tenantId TenantId, storeId StoreId, para
 		if params.Type != nil {
 
 			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "type", runtime.ParamLocationQuery, *params.Type); err != nil {
+				return nil, err
+			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+				return nil, err
+			} else {
+				for k, v := range parsed {
+					for _, v2 := range v {
+						queryValues.Add(k, v2)
+					}
+				}
+			}
+
+		}
+
+		if params.UnderscoreTotal != nil {
+
+			if queryFrag, err := runtime.StyleParamWithLocation("form", true, "_total", runtime.ParamLocationQuery, *params.UnderscoreTotal); err != nil {
 				return nil, err
 			} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
 				return nil, err

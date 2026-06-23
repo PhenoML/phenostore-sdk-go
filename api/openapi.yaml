@@ -280,6 +280,7 @@ paths:
           schema:
             type: string
           description: Document type (CodeableConcept token)
+        - $ref: "#/components/parameters/searchTotal"
       responses:
         "200":
           description: Search results Bundle
@@ -328,6 +329,8 @@ paths:
                 type:
                   type: string
                   description: Document type (CodeableConcept token)
+                _total:
+                  $ref: "#/components/schemas/SearchTotalMode"
       responses:
         "200":
           description: Search results Bundle
@@ -460,7 +463,10 @@ paths:
       description: |
         Searches for resources of the given type. Supports standard FHIR search
         parameters, pagination, sorting, _include/_revinclude, and response shaping.
-        Arbitrary FHIR search parameters beyond the named ones below are also accepted.
+        Arbitrary FHIR search parameters beyond the named ones below are also accepted,
+        including the `:exact` and `:contains` (string) and `:missing` (any type)
+        modifiers and chained references (e.g. `subject:Patient.name=Smith`).
+        Unrecognized `_`-prefixed control parameters are ignored.
       tags: [FHIR]
       parameters:
         - $ref: "#/components/parameters/tenantId"
@@ -961,7 +967,10 @@ components:
         type: integer
         default: 20
         maximum: 1000
-      description: Page size (max 1000)
+      description: >-
+        Page size, clamped to 1–1000; non-positive values are ignored and the
+        default (20) applies. `_count=0` is not treated as a count-only request —
+        use `_summary=count` for that.
     searchOffset:
       name: _offset
       in: query
@@ -969,37 +978,57 @@ components:
         type: integer
         default: 0
         maximum: 10000
-      description: Offset for offset-based pagination
+      description: >-
+        Start position for offset-based pagination, clamped to 0–10000. `next`
+        links use `_offset` only for `_sort`ed searches; it is ignored when
+        `_cursor` is present.
     searchCursor:
       name: _cursor
       in: query
       schema:
         type: string
-      description: Opaque cursor for keyset pagination
+      description: >-
+        Opaque keyset cursor for the default pagination mode. Obtain it from a
+        bundle's `next` link rather than constructing it; cannot be combined
+        with `_sort`.
     searchTotal:
       name: _total
       in: query
       schema:
         $ref: "#/components/schemas/SearchTotalMode"
-      description: Controls whether total count is included in results
+      description: >-
+        Controls whether `Bundle.total` is included. Defaults to omitting the
+        total. `accurate` returns an exact total via a separate count query
+        (which can be costly on broad searches) and is omitted on
+        cursor-paginated pages; `none` omits the total. `estimate` is accepted
+        but currently behaves like `none` (no approximate total is emitted).
     searchSummary:
       name: _summary
       in: query
       schema:
         $ref: "#/components/schemas/SearchSummaryMode"
-      description: Response summary mode
+      description: >-
+        Response shaping mode. `true` keeps summary elements, `text` keeps only
+        text/id/meta, `data` drops the narrative, `false` returns everything,
+        and `count` returns only `Bundle.total` with no entries. Cannot be
+        combined with `_elements`.
     searchElements:
       name: _elements
       in: query
       schema:
         type: string
-      description: Comma-separated list of element names to include
+      description: >-
+        Comma-separated list of element names to keep in returned resources.
+        Cannot be combined with `_summary`.
     searchSort:
       name: _sort
       in: query
       schema:
         type: string
-      description: Comma-separated sort fields (prefix with - for descending)
+      description: >-
+        Comma-separated sort fields, each optionally prefixed with `-` for
+        descending order. Sorted searches use offset-based pagination, so
+        `_sort` cannot be combined with `_cursor`.
     searchInclude:
       name: _include
       in: query
@@ -1096,7 +1125,10 @@ components:
 
     SearchTotalMode:
       type: string
-      description: Controls whether total count is included in search results
+      description: >-
+        FHIR `_total` mode controlling whether a result total is returned. These
+        are the three values defined by FHIR R4. `estimate` is accepted but
+        currently behaves like `none` (no total is emitted).
       enum: [none, estimate, accurate]
 
     SearchSummaryMode:
