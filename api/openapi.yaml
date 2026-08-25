@@ -114,6 +114,10 @@ paths:
     get:
       operationId: getMetadata
       summary: FHIR CapabilityStatement
+      description: |
+        Returns the server's FHIR R4 CapabilityStatement, including supported resource and
+        system interactions, search parameters, versioning behavior, and SMART on FHIR
+        authentication requirements.
       tags: [FHIR]
       parameters:
         - $ref: "#/components/parameters/tenantId"
