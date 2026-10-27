@@ -10,3 +10,15 @@ updates:
       github-actions:
         patterns:
           - "*"
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    cooldown:
+      default-days: 14
+    allow:
+      - dependency-type: "all"
+    groups:
+      go-dependencies:
+        patterns:
+          - "*"
