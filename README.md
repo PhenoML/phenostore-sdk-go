@@ -96,7 +96,55 @@ The client code in `phenostore/gen/` is generated from the OpenAPI spec in `api/
 make generate
 ```
 
-The `make check-generated` target verifies the generated code is in sync with the spec.
+The generator is pinned in the separate `tools/go.mod` module so its dependencies
+and Go requirements do not become SDK requirements. The SDK supports Go 1.24.0;
+generation uses the toolchain required by `tools/go.mod` (Go can download it
+automatically). The `make check-generated` target verifies that the committed
+spec, generator version, and generated client agree.
+
+## Dependency maintenance
+
+Dependabot groups monthly updates to SDK runtime dependencies and GitHub Actions
+separately. Routine Go updates target direct dependencies; transitive dependencies
+follow their parents. Security updates remain enabled for both SDK and tooling
+dependencies, including indirect dependencies, in separate security groups.
+
+The **Update SDK generator** workflow runs monthly or manually. It upgrades the
+generator, regenerates the client from the committed spec, tidies dependencies,
+and runs build, race tests, and generation checks before opening one maintenance
+PR. An open maintenance PR prevents another from being created. It uses
+`GITHUB_TOKEN`; approve pending PR workflows in GitHub to run the normal CI
+checks on the SDK's minimum Go version and run lint before merging.
+
+To prepare the same change locally, or finish a generator security PR:
+
+```sh
+make update-generator                         # latest generator
+make update-generator GENERATOR_VERSION=v2.6.0  # a specific version
+go build ./...
+make test check-generated lint
+```
+
+Commit `tools/go.mod`, `tools/go.sum`, any SDK dependency changes, and the
+regenerated client together. Review changes to the generated public API and
+behavior before merging. The HTTP contract tests exercise the wrapper and
+generated client together against a local TLS server, including authentication,
+FHIR request serialization, search parameters, bundles, and errors.
+
+CI builds and runs tests on Go 1.24.0 before checking regeneration with the tools
+toolchain. Dependency updates that require a newer SDK Go version fail that
+check; raising the minimum requires an explicit CI and documentation update.
+`make update-generator` also preserves the SDK's minimum Go version.
+
+The generator is currently upgraded to v2.6.0. Version v2.7.2 changes the public
+`gen.BearerAuthScopes` constant to a named context-key type, breaking existing
+assignments to `string`; a compile-time compatibility check guards that usage.
+Versions v2.8.0 and v2.8.1 fail the HTTP contract tests: they parse the
+`Last-Modified` response header as an RFC3339 timestamp, while Phenostore returns
+an HTTP date. The upstream OpenAPI
+header schema must be corrected and synced here before that upgrade can pass.
+Do not bypass the test or edit the imported spec to unblock it. Until then,
+maintenance runs targeting `latest` will fail validation without opening a PR.
 
 ## License
 

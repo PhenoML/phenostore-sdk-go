@@ -1,0 +1,87 @@
+name: Update SDK generator
+
+on:
+  schedule:
+    - cron: "0 9 1 * *"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "oapi-codegen version (e.g. v2.6.0 or latest)"
+        default: "latest"
+        required: true
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-sdk-generator
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: main
+
+      - name: Check for an existing maintenance PR
+        id: existing
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          branch=$(gh pr list --state open --limit 100 --json headRefName \
+            --jq '[.[] | select(.headRefName | startswith("maintenance/generator-"))][0].headRefName // ""')
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        if: steps.existing.outputs.branch == ''
+        with:
+          go-version-file: tools/go.mod
+          cache-dependency-path: |
+            go.sum
+            tools/go.sum
+
+      - name: Upgrade generator and regenerate SDK
+        if: steps.existing.outputs.branch == ''
+        env:
+          GENERATOR_VERSION: ${{ inputs.version || 'latest' }}
+          # The isolated tools module may require a newer generator toolchain.
+          GOTOOLCHAIN: auto
+        run: make update-generator
+
+      - name: Validate regenerated SDK
+        if: steps.existing.outputs.branch == ''
+        run: |
+          go build ./...
+          make test check-generated
+
+      - name: Open maintenance PR
+        if: steps.existing.outputs.branch == ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if git diff --quiet -- go.mod go.sum tools/go.mod tools/go.sum phenostore/gen/generated.go; then
+            echo "Generator and generated client are already current."
+            exit 0
+          fi
+
+          branch="maintenance/generator-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git checkout -b "$branch"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add go.mod go.sum tools/go.mod tools/go.sum phenostore/gen/generated.go
+          git commit -m "fix: update SDK generator and regenerate client"
+          git push -u origin "$branch"
+
+          cat > "$RUNNER_TEMP/generator-pr.md" <<'EOF'
+          Updates the pinned SDK generator and its dependencies, regenerates the client from the committed spec, and tidies SDK dependencies in one change.
+
+          Build, race tests, and generation consistency checks passed before opening this PR. Approve pending PR workflows in GitHub to run CI on the SDK's minimum Go version and run lint before merging.
+
+          Review the generated diff for public API and behavior changes before merging. Adjust the title to `feat:` or `feat!:` if the SDK API changes warrant a minor or major release.
+          EOF
+          gh pr create --base main --head "$branch" \
+            --title "fix: update SDK generator and regenerate client" \
+            --body-file "$RUNNER_TEMP/generator-pr.md"
