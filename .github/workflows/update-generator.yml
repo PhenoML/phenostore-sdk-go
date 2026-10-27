@@ -32,12 +32,12 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          count=$(gh pr list --state open --limit 100 --json headRefName \
-            --jq '[.[] | select(.headRefName | startswith("maintenance/generator-"))] | length')
-          echo "count=$count" >> "$GITHUB_OUTPUT"
+          branch=$(gh pr list --state open --limit 100 --json headRefName \
+            --jq '[.[] | select(.headRefName | startswith("maintenance/generator-"))][0].headRefName // ""')
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
-        if: steps.existing.outputs.count == '0'
+        if: steps.existing.outputs.branch == ''
         with:
           go-version-file: tools/go.mod
           cache-dependency-path: |
@@ -45,7 +45,7 @@ jobs:
             tools/go.sum
 
       - name: Upgrade generator and regenerate SDK
-        if: steps.existing.outputs.count == '0'
+        if: steps.existing.outputs.branch == ''
         env:
           GENERATOR_VERSION: ${{ inputs.version || 'latest' }}
           # The isolated tools module may require a newer generator toolchain.
@@ -53,13 +53,14 @@ jobs:
         run: make update-generator
 
       - name: Validate regenerated SDK
-        if: steps.existing.outputs.count == '0'
+        if: steps.existing.outputs.branch == ''
         run: |
           go build ./...
           make test check-generated
 
-      - name: Open maintenance PR and run CI
-        if: steps.existing.outputs.count == '0'
+      - name: Open maintenance PR
+        id: pr
+        if: steps.existing.outputs.branch == ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -86,7 +87,25 @@ jobs:
           gh pr create --base main --head "$branch" \
             --title "fix: update SDK generator and regenerate client" \
             --body-file "$RUNNER_TEMP/generator-pr.md"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
 
-          # GITHUB_TOKEN-created PRs do not trigger pull_request workflows;
-          # workflow_dispatch does run and attaches checks to the pushed commit.
-          gh workflow run ci.yml --ref "$branch"
+      - name: Dispatch CI for maintenance PR
+        if: steps.existing.outputs.branch != '' || steps.pr.outputs.branch != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: ${{ steps.existing.outputs.branch || steps.pr.outputs.branch }}
+        run: |
+          # Bot-created PRs need an explicit dispatch to start CI automatically.
+          # Actions may briefly lag behind a new branch. Retry here; a workflow
+          # rerun can also reach this step for an already-open maintenance PR.
+          for attempt in 1 2 3 4 5; do
+            if gh workflow run ci.yml --ref "$BRANCH"; then
+              exit 0
+            fi
+            if [[ "$attempt" -lt 5 ]]; then
+              sleep "$((attempt * 5))"
+            fi
+          done
+
+          echo "::error::Could not dispatch CI for $BRANCH. Rerun this workflow to retry the existing maintenance PR."
+          exit 1
