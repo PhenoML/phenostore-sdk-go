@@ -16,9 +16,25 @@ updates:
       interval: "monthly"
     cooldown:
       default-days: 14
-    allow:
-      - dependency-type: "all"
+    # Default policy: routine updates for direct dependencies, security
+    # updates for both direct and indirect dependencies. Tooling is separate.
     groups:
       go-dependencies:
+        patterns:
+          - "*"
+      go-security:
+        applies-to: "security-updates"
+        patterns:
+          - "*"
+  - package-ecosystem: "gomod"
+    directory: "/tools"
+    schedule:
+      interval: "monthly"
+    # Version updates must regenerate the SDK in update-generator.yml.
+    # Security updates remain enabled and must include regeneration too.
+    open-pull-requests-limit: 0
+    groups:
+      generator-security:
+        applies-to: "security-updates"
         patterns:
           - "*"
