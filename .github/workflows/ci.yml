@@ -3,9 +3,6 @@ name: CI
 on:
   pull_request:
     branches: [main]
-  # Generator maintenance uses this because GITHUB_TOKEN-created PRs do not
-  # trigger pull_request workflows automatically.
-  workflow_dispatch:
 
 permissions:
   contents: read

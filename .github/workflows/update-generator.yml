@@ -13,7 +13,6 @@ on:
 permissions:
   contents: write
   pull-requests: write
-  actions: write
 
 concurrency:
   group: update-sdk-generator
@@ -59,7 +58,6 @@ jobs:
           make test check-generated
 
       - name: Open maintenance PR
-        id: pr
         if: steps.existing.outputs.branch == ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -80,32 +78,10 @@ jobs:
           cat > "$RUNNER_TEMP/generator-pr.md" <<'EOF'
           Updates the pinned SDK generator and its dependencies, regenerates the client from the committed spec, and tidies SDK dependencies in one change.
 
-          Build, race tests, and generation consistency checks passed before opening this PR. CI also checks the SDK on its minimum Go version and runs lint.
+          Build, race tests, and generation consistency checks passed before opening this PR. Approve pending PR workflows in GitHub to run CI on the SDK's minimum Go version and run lint before merging.
 
           Review the generated diff for public API and behavior changes before merging. Adjust the title to `feat:` or `feat!:` if the SDK API changes warrant a minor or major release.
           EOF
           gh pr create --base main --head "$branch" \
             --title "fix: update SDK generator and regenerate client" \
             --body-file "$RUNNER_TEMP/generator-pr.md"
-          echo "branch=$branch" >> "$GITHUB_OUTPUT"
-
-      - name: Dispatch CI for maintenance PR
-        if: steps.existing.outputs.branch != '' || steps.pr.outputs.branch != ''
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: ${{ steps.existing.outputs.branch || steps.pr.outputs.branch }}
-        run: |
-          # Bot-created PRs need an explicit dispatch to start CI automatically.
-          # Actions may briefly lag behind a new branch. Retry here; a workflow
-          # rerun can also reach this step for an already-open maintenance PR.
-          for attempt in 1 2 3 4 5; do
-            if gh workflow run ci.yml --ref "$BRANCH"; then
-              exit 0
-            fi
-            if [[ "$attempt" -lt 5 ]]; then
-              sleep "$((attempt * 5))"
-            fi
-          done
-
-          echo "::error::Could not dispatch CI for $BRANCH. Rerun this workflow to retry the existing maintenance PR."
-          exit 1

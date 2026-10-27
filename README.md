@@ -112,10 +112,9 @@ dependencies, including indirect dependencies, in separate security groups.
 The **Update SDK generator** workflow runs monthly or manually. It upgrades the
 generator, regenerates the client from the committed spec, tidies dependencies,
 and runs build, race tests, and generation checks before opening one maintenance
-PR. It reuses an existing maintenance PR instead of opening another, and reruns
-can retry CI for that branch. CI dispatch retries temporary failures and fails
-visibly if all attempts fail. Explicit dispatch starts CI automatically for PRs
-created using `GITHUB_TOKEN`.
+PR. An open maintenance PR prevents another from being created. It uses
+`GITHUB_TOKEN`; approve pending PR workflows in GitHub to run the normal CI
+checks on the SDK's minimum Go version and run lint before merging.
 
 To prepare the same change locally, or finish a generator security PR:
 
