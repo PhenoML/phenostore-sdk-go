@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.2.0](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.1.2...v0.2.0) (2026-10-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* raise minimum Go version to 1.26 ([#39](https://github.com/PhenoML/phenostore-sdk-go/issues/39))
+
+### Build System
+
+* raise minimum Go version to 1.26 ([#39](https://github.com/PhenoML/phenostore-sdk-go/issues/39)) ([fdf4ab2](https://github.com/PhenoML/phenostore-sdk-go/commit/fdf4ab2476750577681de0fe5de9dc50614399e3))
+
 ## [0.1.2](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.1.1...v0.1.2) (2026-06-23)
 
 
