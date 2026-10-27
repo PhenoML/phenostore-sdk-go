@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Change this explicitly when intentionally raising SDK requirements.
-      SDK_GO_VERSION: "1.24.0"
+      SDK_GO_VERSION: "1.26.0"
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 

@@ -4,6 +4,8 @@ Go SDK for [Phenostore](https://phenoml.com), a FHIR-compatible data store by Ph
 
 ## Installation
 
+Requires Go 1.26.0 or later.
+
 ```sh
 go get github.com/phenoml/phenostore-sdk-go
 ```
@@ -97,7 +99,7 @@ make generate
 ```
 
 The generator is pinned in the separate `tools/go.mod` module so its dependencies
-and Go requirements do not become SDK requirements. The SDK supports Go 1.24.0;
+and Go requirements do not become SDK requirements. The SDK requires Go 1.26.0;
 generation uses the toolchain required by `tools/go.mod` (Go can download it
 automatically). The `make check-generated` target verifies that the committed
 spec, generator version, and generated client agree.
@@ -131,7 +133,7 @@ behavior before merging. The HTTP contract tests exercise the wrapper and
 generated client together against a local TLS server, including authentication,
 FHIR request serialization, search parameters, bundles, and errors.
 
-CI builds and runs tests on Go 1.24.0 before checking regeneration with the tools
+CI builds and runs tests on Go 1.26.0 before checking regeneration with the tools
 toolchain. Dependency updates that require a newer SDK Go version fail that
 check; raising the minimum requires an explicit CI and documentation update.
 `make update-generator` also preserves the SDK's minimum Go version.
