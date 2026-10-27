@@ -1,6 +1,6 @@
 module github.com/phenoml/phenostore-sdk-go/tools
 
-go 1.24.0
+go 1.26.0
 
 tool github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen
 

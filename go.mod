@@ -1,6 +1,6 @@
 module github.com/phenoml/phenostore-sdk-go
 
-go 1.24.0
+go 1.26.0
 
 require (
 	github.com/oapi-codegen/runtime v1.7.0
