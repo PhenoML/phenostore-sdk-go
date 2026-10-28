@@ -122,7 +122,7 @@ To prepare the same change locally, or finish a generator security PR:
 
 ```sh
 make update-generator                         # latest generator
-make update-generator GENERATOR_VERSION=v2.6.0  # a specific version
+make update-generator GENERATOR_VERSION=v2.7.1  # a specific version
 go build ./...
 make test check-generated lint
 ```
@@ -138,9 +138,13 @@ toolchain. Dependency updates that require a newer SDK Go version fail that
 check; raising the minimum requires an explicit CI and documentation update.
 `make update-generator` also preserves the SDK's minimum Go version.
 
-The generator is currently upgraded to v2.6.0. Version v2.7.2 changes the public
-`gen.BearerAuthScopes` constant to a named context-key type, breaking existing
-assignments to `string`; a compile-time compatibility check guards that usage.
+The generator is currently upgraded to v2.7.1. The public `gen.BearerAuthScopes`
+constant now has a named context-key type to prevent collisions with string keys.
+This is a breaking change: use `string(gen.BearerAuthScopes)` where a string is
+required, and use the typed constant directly when storing or retrieving context
+values. A regression test verifies that the typed key is distinct from a string
+key with the same value.
+
 Versions v2.8.0 and v2.8.1 fail the HTTP contract tests: they parse the
 `Last-Modified` response header as an RFC3339 timestamp, while Phenostore returns
 an HTTP date. The upstream OpenAPI

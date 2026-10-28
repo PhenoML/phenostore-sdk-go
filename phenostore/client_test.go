@@ -20,9 +20,16 @@ import (
 const resourcePath = "/v1/tenants/test-tenant/stores/test-store/Patient"
 const patientJSON = `{"resourceType":"Patient","id":"pat-123","active":true,"extension":[{"url":"https://example.com/custom","valueString":"preserved"}]}`
 
-// Preserve the public string constant's assignability for existing SDK users.
-// oapi-codegen v2.7 makes it a named context-key type, breaking this usage.
-var _ string = gen.BearerAuthScopes
+func TestBearerAuthScopeContextKey(t *testing.T) {
+	scopes := []string{"system/*.read"}
+	ctx := context.WithValue(context.Background(), gen.BearerAuthScopes, scopes)
+	if got := ctx.Value(gen.BearerAuthScopes); !reflect.DeepEqual(got, scopes) {
+		t.Errorf("scopes = %v, want %v", got, scopes)
+	}
+	if got := ctx.Value(string(gen.BearerAuthScopes)); got != nil {
+		t.Errorf("typed scope key collided with a string key: %v", got)
+	}
+}
 
 // TLS also verifies that WithHTTPClient reaches both the OAuth exchange and
 // the generated API client. No credentials or live Phenostore service are needed.
