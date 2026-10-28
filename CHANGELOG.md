@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.2.0...v0.3.0) (2026-10-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* update generator security dependencies and regenerate client ([#38](https://github.com/PhenoML/phenostore-sdk-go/issues/38))
+
+### Bug Fixes
+
+* update generator security dependencies and regenerate client ([#38](https://github.com/PhenoML/phenostore-sdk-go/issues/38)) ([f78e935](https://github.com/PhenoML/phenostore-sdk-go/commit/f78e9350b73cbad39271aaa1dafd84ab5ecaf967))
+
 ## [0.2.0](https://github.com/PhenoML/phenostore-sdk-go/compare/v0.1.2...v0.2.0) (2026-10-27)
 
 
