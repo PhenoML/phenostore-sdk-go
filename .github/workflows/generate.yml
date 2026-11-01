@@ -45,7 +45,7 @@ jobs:
       # adapt the hand-written wrapper (client.go, errors.go, examples/).
       - name: Adapt wrapper to generated changes
         if: steps.try-build.outcome == 'failure'
-        uses: anthropics/claude-code-action@756cc22e19660d20e8cc9496b4f242475a7f7790 # v1.0.235
+        uses: anthropics/claude-code-action@ed670b4cf9de2a5a570d130d2f6197b9e543cd64 # v1.0.240
         with:
           prompt: "Read and follow the instructions in .github/prompts/adapt-to-generated-changes.md"
           claude_args: "--model opus --allowedTools View,Edit,Write,GlobTool,GrepTool,Bash(go:*)"
@@ -61,7 +61,7 @@ jobs:
       - name: Generate commit message
         if: github.event_name == 'repository_dispatch'
         continue-on-error: true
-        uses: anthropics/claude-code-action@756cc22e19660d20e8cc9496b4f242475a7f7790 # v1.0.235
+        uses: anthropics/claude-code-action@ed670b4cf9de2a5a570d130d2f6197b9e543cd64 # v1.0.240
         with:
           prompt: |
             The upstream PR title is: ${{ github.event.client_payload.pr_title }}
