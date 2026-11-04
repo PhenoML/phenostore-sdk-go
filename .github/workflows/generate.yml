@@ -48,6 +48,7 @@ jobs:
         if: steps.try-build.outcome == 'failure'
         uses: anthropics/claude-code-action@ed670b4cf9de2a5a570d130d2f6197b9e543cd64 # v1.0.240
         with:
+          show_full_output: ${{ runner.debug == '1' }}
           prompt: "Read and follow the instructions in .github/prompts/adapt-to-generated-changes.md"
           claude_args: "--model opus --allowedTools View,Edit,Write,GlobTool,GrepTool,Bash(go:*)"
           anthropic_federation_rule_id: fdrl_011V1ada7WqjYRpXsNLW6wE9
@@ -62,11 +63,22 @@ jobs:
       - name: Run tests
         run: go test -race -count=1 -timeout 5m ./...
 
+      - name: Check for changes
+        id: changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::SDK regeneration produced no changes."
+          fi
+
       - name: Generate commit message
-        if: github.event_name == 'repository_dispatch'
+        if: github.event_name == 'repository_dispatch' && steps.changes.outputs.changed == 'true'
         continue-on-error: true
         uses: anthropics/claude-code-action@ed670b4cf9de2a5a570d130d2f6197b9e543cd64 # v1.0.240
         with:
+          show_full_output: ${{ runner.debug == '1' }}
           prompt: |
             The upstream PR title is: ${{ github.event.client_payload.pr_title }}
 
@@ -79,7 +91,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create pull request
-        if: github.event_name == 'repository_dispatch'
+        if: github.event_name == 'repository_dispatch' && steps.changes.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SPEC_SHA: ${{ github.event.client_payload.spec_sha }}
@@ -90,8 +102,8 @@ jobs:
 
           if [[ -f .commit-message ]] && [[ -s .commit-message ]]; then
             COMMIT_TITLE=$(head -1 .commit-message)
-            rm .commit-message
           fi
+          rm -f .commit-message
           if [[ -z "${COMMIT_TITLE}" ]]; then
             if [[ -n "${PR_TITLE}" ]]; then
               COMMIT_TITLE="feat: regenerate SDK — ${PR_TITLE}"
@@ -101,6 +113,10 @@ jobs:
           fi
 
           git add -A
+          if git diff --cached --quiet; then
+            echo "::notice::SDK regeneration produced no changes to commit."
+            exit 0
+          fi
           git commit -m "${COMMIT_TITLE}"
           git push -u --force origin "$BRANCH"
 
