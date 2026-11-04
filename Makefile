@@ -1,4 +1,4 @@
-.PHONY: generate update-generator test lint lint-fix check-generated
+.PHONY: generate update-generator check test lint lint-fix check-generated
 
 GOLANGCI_LINT_VERSION ?= v2.10.1
 GENERATOR_VERSION ?= latest
@@ -16,7 +16,17 @@ update-generator:
 	go -C tools get -tool "github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@$$GENERATOR_VERSION"; \
 	go -C tools mod tidy; \
 	$(MAKE) generate; \
-	go mod tidy -go="$$sdk_go"
+	go mod tidy -go="$$sdk_go"; \
+	$(MAKE) check
+
+# Validate runtime compatibility on the minimum Go version in go.mod, even
+# when generator maintenance requires a newer toolchain in tools/go.mod.
+check:
+	@set -eu; \
+	sdk_go=$$(go list -m -f '{{.GoVersion}}'); \
+	GOTOOLCHAIN="go$$sdk_go" go build ./...; \
+	GOTOOLCHAIN="go$$sdk_go" $(MAKE) test lint; \
+	GOTOOLCHAIN=auto $(MAKE) check-generated
 
 test:
 	go test -race -count=1 -timeout 5m ./...

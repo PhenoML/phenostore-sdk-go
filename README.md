@@ -104,6 +104,47 @@ generation uses the toolchain required by `tools/go.mod` (Go can download it
 automatically). The `make check-generated` target verifies that the committed
 spec, generator version, and generated client agree.
 
+## Automated SDK regeneration
+
+The **Regenerate SDK** workflow accepts upstream `spec-updated` dispatches and
+manual runs. It starts from `main`, validates and imports the supplied spec for
+upstream dispatches, regenerates the client, and checks the build, race tests,
+lint, and generation consistency through `make check`. Runtime checks use the
+SDK's minimum Go version; generation uses the separate tools module's toolchain.
+
+If compatibility checks fail, Claude may adapt the handwritten wrapper, tests,
+examples, and documentation. All checks must then pass before publication.
+Only the imported spec, generated client, and validated handwritten changes are
+included; tooling, dependencies, and workflows are excluded.
+
+Runs are serialized and maintain one PR from `sdk/regenerate`. Later runs update
+that PR; an upstream dispatch whose SDK already matches `main` closes an obsolete
+regeneration PR without creating an empty commit. Manual runs use the committed
+spec and leave any pending upstream PR open when there are no changes.
+Claude proposes a conventional commit and PR title for actual changes, with a
+fixed `feat:` fallback if classification fails. Review the title's release
+classification before merging.
+
+PRs created with `GITHUB_TOKEN` do not automatically trigger PR workflows. Run
+the **CI** workflow manually on `sdk/regenerate` before merging:
+
+```sh
+gh workflow run ci.yml --ref sdk/regenerate
+```
+
+Both Claude steps use Anthropic workload identity federation. The federation
+rule must allow this repository on `refs/heads/main` for both
+`repository_dispatch` and `workflow_dispatch`. Re-running an old workflow run
+retains its original workflow commit; trigger a new run after workflow updates.
+Enable debug logging on a run to include Claude's full output.
+
+The publishing and payload-validation regression tests run in CI and can be
+run locally with Python 3, without installing packages:
+
+```sh
+python3 -B -m unittest discover -s .github/scripts/tests -v
+```
+
 ## Dependency maintenance
 
 Dependabot groups monthly updates to SDK runtime dependencies and GitHub Actions
@@ -111,20 +152,23 @@ separately. Routine Go updates target direct dependencies; transitive dependenci
 follow their parents. Security updates remain enabled for both SDK and tooling
 dependencies, including indirect dependencies, in separate security groups.
 
-The **Update SDK generator** workflow runs monthly or manually. It upgrades the
-generator, regenerates the client from the committed spec, tidies dependencies,
-and runs build, race tests, and generation checks before opening one maintenance
-PR. An open maintenance PR prevents another from being created. It uses
-`GITHUB_TOKEN`; approve pending PR workflows in GitHub to run the normal CI
-checks on the SDK's minimum Go version and run lint before merging.
+The **Update SDK generator** workflow runs monthly or manually. It calls
+`make update-generator` to upgrade the generator, regenerate the client from the
+committed spec, tidy dependencies, and run `make check` before opening one
+maintenance PR. An open maintenance PR from this repository targeting `main`
+prevents duplicates. Build, race tests, and lint run on the SDK's minimum Go
+version, with generation checks using the tools module's toolchain. The workflow
+uses `GITHUB_TOKEN`; run **CI** manually on the maintenance branch before merging,
+since these PRs do not automatically trigger PR workflows.
 
-To prepare the same change locally, or finish a generator security PR:
+To upgrade and validate the generator locally, run `make update-generator` for
+the latest release or `make update-generator GENERATOR_VERSION=v2.7.1` for a
+specific version.
+
+To validate other SDK changes, including generator security PRs:
 
 ```sh
-make update-generator                         # latest generator
-make update-generator GENERATOR_VERSION=v2.7.1  # a specific version
-go build ./...
-make test check-generated lint
+make check
 ```
 
 Commit `tools/go.mod`, `tools/go.sum`, any SDK dependency changes, and the
@@ -136,7 +180,10 @@ FHIR request serialization, search parameters, bundles, and errors.
 CI builds and runs tests on Go 1.26.0 before checking regeneration with the tools
 toolchain. Dependency updates that require a newer SDK Go version fail that
 check; raising the minimum requires an explicit CI and documentation update.
-`make update-generator` also preserves the SDK's minimum Go version.
+`make update-generator` also preserves the SDK's minimum Go version and runs
+the full `make check` validation locally before returning success. An incompatible
+generator update fails validation without opening a maintenance PR; the
+automation does not adapt the wrapper to hide a generator compatibility failure.
 
 The generator is currently upgraded to v2.7.1. The public `gen.BearerAuthScopes`
 constant now has a named context-key type to prevent collisions with string keys.
