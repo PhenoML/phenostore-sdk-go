@@ -69,6 +69,7 @@ if args[:2] == ["pr", "list"]:
             "PATH": f"{fake_bin}:{os.environ['PATH']}",
             "GH_REPO": "example/sdk",
             "GH_TOKEN": "fake-test-token",
+            "GITHUB_EVENT_NAME": "repository_dispatch",
             "SPEC_SHA": "deadbeef",
             "PHENOSTORE_SHA": "deadbeef01234567",
             "GITHUB_OUTPUT": str(self.root / "output"),
@@ -122,6 +123,23 @@ if args[:2] == ["pr", "list"]:
             "pr", "close", "42", "--repo", "example/sdk",
         ])
 
+    def test_manual_no_changes_preserves_pending_upstream_pr(self):
+        self.change()
+        self.publish()
+        upstream_sha = self.branch_sha()
+        git(self.checkout, "switch", "main")
+        previous_calls = len(self.calls())
+        self.publish(
+            TEST_PR_NUMBER="42", GITHUB_EVENT_NAME="workflow_dispatch",
+            SPEC_SHA="", PHENOSTORE_SHA="",
+        )
+        self.assertEqual(self.branch_sha(), upstream_sha)
+        self.assertEqual([call["args"][1] for call in self.calls()[previous_calls:]], ["list"])
+
+    def test_no_event_context_does_not_close_pr(self):
+        self.publish(TEST_PR_NUMBER="42", GITHUB_EVENT_NAME="")
+        self.assertEqual([call["args"][1] for call in self.calls()], ["list"])
+
     def test_check_ignores_unrelated_and_message_files_without_calling_github(self):
         self.write("README.md", "unrelated edit\n")
         self.write(".commit-message", "chore: temporary message\n")
@@ -155,7 +173,10 @@ if args[:2] == ["pr", "list"]:
         self.publish()
         git(self.checkout, "switch", "main")
         self.write("api/openapi.yaml", "newer spec\n")
-        self.publish(TEST_PR_NUMBER="42", SPEC_SHA="", PHENOSTORE_SHA="")
+        self.publish(
+            TEST_PR_NUMBER="42", GITHUB_EVENT_NAME="workflow_dispatch",
+            SPEC_SHA="", PHENOSTORE_SHA="",
+        )
         self.assertEqual(git(self.remote, "show", "sdk/regenerate:api/openapi.yaml"), "newer spec")
         self.assertEqual(sum(call["args"][:2] == ["pr", "create"] for call in self.calls()), 1)
         self.assertEqual(self.calls()[-1]["args"][:3], ["pr", "edit", "42"])

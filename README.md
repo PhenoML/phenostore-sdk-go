@@ -118,11 +118,12 @@ Only the imported spec, generated client, and validated handwritten changes are
 included; tooling, dependencies, and workflows are excluded.
 
 Runs are serialized and maintain one PR from `sdk/regenerate`. Later runs update
-that PR; if the SDK already matches `main`, the workflow closes an obsolete
+that PR; an upstream dispatch whose SDK already matches `main` closes an obsolete
 regeneration PR without creating an empty commit. Manual runs use the committed
-spec and follow the same PR lifecycle. Claude proposes a conventional commit
-and PR title for actual changes, with a fixed `feat:` fallback if classification
-fails. Review the title's release classification before merging.
+spec and leave any pending upstream PR open when there are no changes.
+Claude proposes a conventional commit and PR title for actual changes, with a
+fixed `feat:` fallback if classification fails. Review the title's release
+classification before merging.
 
 PRs created with `GITHUB_TOKEN` do not automatically trigger PR workflows. Run
 the **CI** workflow manually on `sdk/regenerate` before merging:
