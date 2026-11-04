@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  id-token: write # Required for Anthropic workload identity federation.
 
 jobs:
   regenerate:
@@ -49,7 +50,10 @@ jobs:
         with:
           prompt: "Read and follow the instructions in .github/prompts/adapt-to-generated-changes.md"
           claude_args: "--model opus --allowedTools View,Edit,Write,GlobTool,GrepTool,Bash(go:*)"
-          anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
+          anthropic_federation_rule_id: fdrl_011V1ada7WqjYRpXsNLW6wE9
+          anthropic_organization_id: 3d765a0f-2011-4f41-ae8b-2c149547f81c
+          anthropic_service_account_id: svac_013MTiyRpDp6bsxf1589G3As
+          anthropic_workspace_id: wrkspc_016wWcB4rGaSpRjCjwwQhcD4
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify compilation
@@ -68,7 +72,10 @@ jobs:
 
             Read and follow the instructions in .github/prompts/generate-commit-message.md
           claude_args: '--model sonnet --allowedTools "View,GlobTool,GrepTool,Bash(git diff:*),Write"'
-          anthropic_api_key: ${{ secrets.CLAUDE_API_KEY }}
+          anthropic_federation_rule_id: fdrl_011V1ada7WqjYRpXsNLW6wE9
+          anthropic_organization_id: 3d765a0f-2011-4f41-ae8b-2c149547f81c
+          anthropic_service_account_id: svac_013MTiyRpDp6bsxf1589G3As
+          anthropic_workspace_id: wrkspc_016wWcB4rGaSpRjCjwwQhcD4
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create pull request
