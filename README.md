@@ -104,6 +104,39 @@ generation uses the toolchain required by `tools/go.mod` (Go can download it
 automatically). The `make check-generated` target verifies that the committed
 spec, generator version, and generated client agree.
 
+## Automated SDK regeneration
+
+The **Regenerate SDK** workflow accepts upstream `spec-updated` dispatches and
+manual runs. It starts from `main`, validates and imports the supplied spec for
+upstream dispatches, regenerates the client, and checks the build, race tests,
+lint, and generation consistency. Runtime checks use the SDK's minimum Go
+version; generation uses the separate tools module's toolchain.
+
+If compatibility checks fail, Claude may adapt the handwritten wrapper, tests,
+examples, and documentation. All checks must then pass before publication.
+Only the imported spec, generated client, and validated handwritten changes are
+included; tooling, dependencies, and workflows are excluded.
+
+Runs are serialized and maintain one PR from `sdk/regenerate`. Later runs update
+that PR; if the SDK already matches `main`, the workflow closes an obsolete
+regeneration PR without creating an empty commit. Manual runs use the committed
+spec and follow the same PR lifecycle. Claude proposes a conventional commit
+and PR title for actual changes, with a fixed `feat:` fallback if classification
+fails. Review the title's release classification before merging.
+
+Both Claude steps use Anthropic workload identity federation. The federation
+rule must allow this repository on `refs/heads/main` for both
+`repository_dispatch` and `workflow_dispatch`. Re-running an old workflow run
+retains its original workflow commit; trigger a new run after workflow updates.
+Enable debug logging on a run to include Claude's full output.
+
+The publishing and payload-validation regression tests run in CI and can be
+run locally with Python 3, without installing packages:
+
+```sh
+python3 -B -m unittest discover -s .github/scripts/tests -v
+```
+
 ## Dependency maintenance
 
 Dependabot groups monthly updates to SDK runtime dependencies and GitHub Actions
