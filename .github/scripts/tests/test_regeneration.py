@@ -1,6 +1,7 @@
 """Exercise regeneration automation with local Git repositories and a fake gh."""
 
 import base64
+import gzip
 import json
 import os
 from pathlib import Path
@@ -322,17 +323,35 @@ if args[:2] == ["pr", "list"]:
 
     def test_valid_payload_imports_spec(self):
         spec = b"openapi: 3.0.0\n"
-        result = self.run_script("import-spec.sh", SPEC_B64=base64.b64encode(spec).decode())
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual((self.checkout / "api/openapi.yaml").read_bytes(), spec)
+        for encoding, payload in (
+            ("", spec), ("base64", spec), ("gzip+base64", gzip.compress(spec)),
+        ):
+            with self.subTest(encoding=encoding):
+                result = self.run_script(
+                    "import-spec.sh", SPEC_ENCODING=encoding,
+                    SPEC_B64=base64.b64encode(payload).decode(),
+                )
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual((self.checkout / "api/openapi.yaml").read_bytes(), spec)
 
     def test_invalid_payload_preserves_committed_spec(self):
         for settings in (
             {"SPEC_SHA": ""}, {"SPEC_SHA": "../../escape"},
             {"SPEC_SHA": "a" * 65}, {"SPEC_B64": "invalid!"}, {"SPEC_B64": ""},
+            {"SPEC_ENCODING": "unknown", "SPEC_B64": base64.b64encode(b"spec").decode()},
         ):
             with self.subTest(settings=settings):
                 result = self.run_script("import-spec.sh", **settings)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual((self.checkout / "api/openapi.yaml").read_text(), "original\n")
+
+    def test_invalid_gzip_preserves_committed_spec(self):
+        for payload in (b"not gzip", gzip.compress(b""), gzip.compress(b"spec")[:-4]):
+            with self.subTest(payload=payload):
+                result = self.run_script(
+                    "import-spec.sh", SPEC_ENCODING="gzip+base64",
+                    SPEC_B64=base64.b64encode(payload).decode(),
+                )
                 self.assertNotEqual(result.returncode, 0)
                 self.assertEqual((self.checkout / "api/openapi.yaml").read_text(), "original\n")
 

@@ -28,6 +28,7 @@ jobs:
         if: github.event_name == 'repository_dispatch'
         env:
           SPEC_B64: ${{ github.event.client_payload.spec_b64 }}
+          SPEC_ENCODING: ${{ github.event.client_payload.spec_encoding }}
           SPEC_SHA: ${{ github.event.client_payload.spec_sha }}
         run: bash .github/scripts/import-spec.sh
 
