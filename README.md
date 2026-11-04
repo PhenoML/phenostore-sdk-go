@@ -160,12 +160,14 @@ version, with generation checks using the tools module's toolchain. The workflow
 uses `GITHUB_TOKEN`; run **CI** manually on the maintenance branch before merging,
 since these PRs do not automatically trigger PR workflows.
 
-To prepare the same change locally, or finish a generator security PR:
+To upgrade and validate the generator locally, run `make update-generator` for
+the latest release or `make update-generator GENERATOR_VERSION=v2.7.1` for a
+specific version.
+
+To validate other SDK changes, including generator security PRs:
 
 ```sh
-make update-generator                         # latest generator
-make update-generator GENERATOR_VERSION=v2.7.1  # a specific version
-make check                                    # validate any SDK change
+make check
 ```
 
 Commit `tools/go.mod`, `tools/go.sum`, any SDK dependency changes, and the

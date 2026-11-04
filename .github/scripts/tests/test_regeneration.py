@@ -91,6 +91,14 @@ if args[:2] == ["pr", "list"]:
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         return result
 
+    def check_changes(self, **settings):
+        result = self.run_script("open-regeneration-pr.sh", "--check", **settings)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        return dict(
+            line.split("=", 1)
+            for line in Path(self.env["GITHUB_OUTPUT"]).read_text().splitlines()
+        )
+
     def calls(self):
         if not self.calls_file.exists():
             return []
@@ -117,18 +125,14 @@ if args[:2] == ["pr", "list"]:
     def test_check_ignores_unrelated_and_message_files_without_calling_github(self):
         self.write("README.md", "unrelated edit\n")
         self.write(".commit-message", "chore: temporary message\n")
-        result = self.run_script("open-regeneration-pr.sh", "--check")
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("changed=false\n", (self.root / "output").read_text())
+        outputs = self.check_changes()
+        self.assertEqual(outputs["changed"], "false")
         self.assertEqual(self.calls(), [])
 
     def test_check_includes_new_validated_wrapper_files(self):
         self.write("phenostore/new_test.go", "new regression test\n")
-        result = self.run_script(
-            "open-regeneration-pr.sh", "--check", INCLUDE_WRAPPER_CHANGES="true",
-        )
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("changed=true\n", (self.root / "output").read_text())
+        outputs = self.check_changes(INCLUDE_WRAPPER_CHANGES="true")
+        self.assertEqual(outputs["changed"], "true")
         self.assertEqual(self.calls(), [])
 
     def test_create_commits_only_generated_changes(self):
@@ -200,18 +204,14 @@ if args[:2] == ["pr", "list"]:
 
     def test_publishing_uses_the_validated_diff_with_generated_title(self):
         self.change()
-        result = self.run_script("open-regeneration-pr.sh", "--check")
-        self.assertEqual(result.returncode, 0, result.stderr)
-        outputs = dict(line.split("=", 1) for line in (self.root / "output").read_text().splitlines())
+        outputs = self.check_changes()
         self.write(".commit-message", "fix: correct resource decoding\n")
         self.publish(VALIDATED_TREE=outputs["tree"])
         self.assertEqual(git(self.remote, "log", "-1", "--format=%s", "sdk/regenerate"), "fix: correct resource decoding")
 
     def test_changes_after_validation_are_not_published(self):
         self.change()
-        result = self.run_script("open-regeneration-pr.sh", "--check")
-        self.assertEqual(result.returncode, 0, result.stderr)
-        outputs = dict(line.split("=", 1) for line in (self.root / "output").read_text().splitlines())
+        outputs = self.check_changes()
         self.write("phenostore/gen/generated.go", "unvalidated change after classification\n")
         result = self.run_script(VALIDATED_TREE=outputs["tree"])
         self.assertNotEqual(result.returncode, 0)
