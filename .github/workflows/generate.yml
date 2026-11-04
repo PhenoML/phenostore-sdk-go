@@ -56,10 +56,7 @@ jobs:
         continue-on-error: true
         env:
           GOTOOLCHAIN: local
-        run: |
-          go build ./...
-          make test lint
-          GOTOOLCHAIN=auto make check-generated
+        run: make check
 
       - name: Adapt wrapper to generated changes
         id: adapt
@@ -82,10 +79,7 @@ jobs:
         if: steps.compatibility.outcome == 'failure'
         env:
           GOTOOLCHAIN: local
-        run: |
-          go build ./...
-          make test lint
-          GOTOOLCHAIN=auto make check-generated
+        run: make check
 
       - name: Check for changes
         id: changes

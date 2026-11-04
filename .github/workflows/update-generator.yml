@@ -11,8 +11,7 @@ on:
         required: true
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: update-sdk-generator
@@ -21,6 +20,9 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
@@ -29,10 +31,10 @@ jobs:
       - name: Check for an existing maintenance PR
         id: existing
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
-          branch=$(gh pr list --state open --limit 100 --json headRefName \
-            --jq '[.[] | select(.headRefName | startswith("maintenance/generator-"))][0].headRefName // ""')
+          branch=$(gh pr list --base main --state open --limit 100 --json headRefName,isCrossRepository \
+            --jq '[.[] | select(.isCrossRepository == false) | select(.headRefName | startswith("maintenance/generator-"))][0].headRefName // ""')
           echo "branch=$branch" >> "$GITHUB_OUTPUT"
 
       - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
@@ -43,7 +45,7 @@ jobs:
             go.sum
             tools/go.sum
 
-      - name: Upgrade generator and regenerate SDK
+      - name: Upgrade generator, regenerate, and validate SDK
         if: steps.existing.outputs.branch == ''
         env:
           GENERATOR_VERSION: ${{ inputs.version || 'latest' }}
@@ -51,16 +53,10 @@ jobs:
           GOTOOLCHAIN: auto
         run: make update-generator
 
-      - name: Validate regenerated SDK
-        if: steps.existing.outputs.branch == ''
-        run: |
-          go build ./...
-          make test check-generated
-
       - name: Open maintenance PR
         if: steps.existing.outputs.branch == ''
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           if git diff --quiet -- go.mod go.sum tools/go.mod tools/go.sum phenostore/gen/generated.go; then
             echo "Generator and generated client are already current."
@@ -71,16 +67,18 @@ jobs:
           git checkout -b "$branch"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add go.mod go.sum tools/go.mod tools/go.sum phenostore/gen/generated.go
+          git add -- go.mod go.sum tools/go.mod tools/go.sum phenostore/gen/generated.go
           git commit -m "fix: update SDK generator and regenerate client"
           git push -u origin "$branch"
 
           cat > "$RUNNER_TEMP/generator-pr.md" <<'EOF'
           Updates the pinned SDK generator and its dependencies, regenerates the client from the committed spec, and tidies SDK dependencies in one change.
 
-          Build, race tests, and generation consistency checks passed before opening this PR. Approve pending PR workflows in GitHub to run CI on the SDK's minimum Go version and run lint before merging.
+          Build, race tests, and lint passed on the SDK's minimum Go version; generation consistency also passed before opening this PR.
 
           Review the generated diff for public API and behavior changes before merging. Adjust the title to `feat:` or `feat!:` if the SDK API changes warrant a minor or major release.
+
+          PRs created with GITHUB_TOKEN do not automatically trigger PR workflows. Run CI manually on this branch before merging.
           EOF
           gh pr create --base main --head "$branch" \
             --title "fix: update SDK generator and regenerate client" \

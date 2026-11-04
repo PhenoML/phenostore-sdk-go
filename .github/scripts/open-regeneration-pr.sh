@@ -72,6 +72,8 @@ Validation: build and race tests on the SDK's minimum Go version, lint, and gene
 Any required automatic wrapper adaptations are included in this PR and have passed validation.
 
 Review the title before merging: feat: releases a minor version, fix: a patch, feat!: a major, and chore: no release.
+
+PRs created with GITHUB_TOKEN do not automatically trigger PR workflows. Run CI manually on this branch before merging.
 EOF
 
 if [[ -n "$pr_number" ]]; then
