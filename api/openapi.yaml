@@ -1,3 +1,4 @@
+# Canonical data API contract used to generate the Phenostore SDKs.
 openapi: 3.0.3
 info:
   title: Phenostore FHIR Data API
