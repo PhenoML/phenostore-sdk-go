@@ -79,19 +79,19 @@ jobs:
           INCLUDE_WRAPPER_CHANGES: ${{ steps.adapt.outcome == 'success' }}
         run: bash .github/scripts/open-regeneration-pr.sh --check
 
-      - name: Generate commit message
+      - name: Classify SDK release
+        id: classify
         if: steps.changes.outputs.changed == 'true'
         continue-on-error: true
         uses: anthropics/claude-code-action@aa8a7738e48bf30a40ee499ce818bef081c5ab5e # v1.0.257
+        env:
+          UPSTREAM_PR_TITLE: ${{ github.event.client_payload.pr_title }}
         with:
           show_full_output: ${{ runner.debug == '1' }}
-          prompt: |
-            The upstream PR title is: ${{ github.event.client_payload.pr_title }}
-
-            Read and follow the instructions in .github/prompts/generate-commit-message.md
+          prompt: Read and follow the instructions in .github/prompts/generate-commit-message.md
           claude_args: >-
             --model sonnet --max-turns 10
-            --allowedTools "Read,Glob,Grep,Bash(git diff:*),Write"
+            --allowedTools "Read,Glob,Grep,Bash(git diff:*),Bash(printenv UPSTREAM_PR_TITLE),Write"
           anthropic_federation_rule_id: fdrl_011V1ada7WqjYRpXsNLW6wE9
           anthropic_organization_id: 3d765a0f-2011-4f41-ae8b-2c149547f81c
           anthropic_service_account_id: svac_013MTiyRpDp6bsxf1589G3As
@@ -107,4 +107,5 @@ jobs:
           PHENOSTORE_SHA: ${{ github.event.client_payload.phenostore_sha }}
           INCLUDE_WRAPPER_CHANGES: ${{ steps.adapt.outcome == 'success' }}
           VALIDATED_TREE: ${{ steps.changes.outputs.tree }}
+          CLASSIFICATION_SUCCEEDED: ${{ steps.classify.outcome == 'success' }}
         run: bash .github/scripts/open-regeneration-pr.sh

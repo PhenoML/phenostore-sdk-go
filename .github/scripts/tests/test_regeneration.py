@@ -179,22 +179,49 @@ if args[:2] == ["pr", "list"]:
         self.assertEqual(git(self.remote, "show", "sdk/regenerate:phenostore/client.go"), "original")
 
     def test_generated_title_is_used_without_committing_message_file(self):
-        self.change()
-        self.write(".commit-message", "feat!: rename resource parameters\n")
-        self.publish()
-        self.assertEqual(git(self.remote, "log", "-1", "--format=%s", "sdk/regenerate"), "feat!: rename resource parameters")
-        self.assertFalse((self.checkout / ".commit-message").exists())
-        self.assertNotIn(".commit-message", git(self.remote, "ls-tree", "--name-only", "sdk/regenerate"))
+        for title in (
+            "feat: add resource support", "fix: correct resource decoding",
+            "feat!: rename resource parameters", "chore: regenerate internal types",
+            "fix: " + "x" * 67,
+        ):
+            with self.subTest(title=title):
+                git(self.checkout, "switch", "main")
+                self.change()
+                self.write(".commit-message", title + "\n")
+                self.publish(CLASSIFICATION_SUCCEEDED="true")
+                self.assertEqual(git(self.remote, "log", "-1", "--format=%s", "sdk/regenerate"), title)
+                request = self.calls()[-1]["args"]
+                self.assertEqual(request[request.index("--title") + 1], title)
+                self.assertFalse((self.checkout / ".commit-message").exists())
+                self.assertNotIn(".commit-message", git(self.remote, "ls-tree", "--name-only", "sdk/regenerate"))
 
     def test_invalid_or_empty_title_falls_back(self):
-        for title in ("", "not conventional", "feat: " + "x" * 100):
+        for title in (
+            "", "not conventional", "fix!: unexpected breaking fix",
+            "chore!: unexpected release", "fix: " + "x" * 68,
+            "fix:\ttab separator", "fix:  leading space",
+            "fix: embedded\ttab", "fix: carriage\rreturn",
+            "fix: embedded\x1bescape", "fix: delete\x7fcontrol",
+            "fix: first line\nchore: second line",
+        ):
             with self.subTest(title=title):
                 git(self.checkout, "switch", "main")
                 self.change()
                 self.write(".commit-message", title)
                 self.publish()
                 self.assertEqual(git(self.remote, "log", "-1", "--format=%s", "sdk/regenerate"), FALLBACK_TITLE)
+                request = self.calls()[-1]["args"]
+                self.assertEqual(request[request.index("--title") + 1], FALLBACK_TITLE)
                 self.assertFalse((self.checkout / ".commit-message").exists())
+
+    def test_failed_classifier_output_is_ignored(self):
+        self.change()
+        self.write(".commit-message", "feat!: partial classifier output\n")
+        self.publish(CLASSIFICATION_SUCCEEDED="false")
+        self.assertEqual(git(self.remote, "log", "-1", "--format=%s", "sdk/regenerate"), FALLBACK_TITLE)
+        request = self.calls()[-1]["args"]
+        self.assertEqual(request[request.index("--title") + 1], FALLBACK_TITLE)
+        self.assertFalse((self.checkout / ".commit-message").exists())
 
     def test_message_only_workspace_does_not_publish(self):
         self.write(".commit-message", "chore: no API changes\n")

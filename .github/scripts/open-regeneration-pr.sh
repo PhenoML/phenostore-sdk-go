@@ -28,9 +28,10 @@ fi
 : "${GH_REPO:?GH_REPO must identify the SDK repository}"
 branch="sdk/regenerate"
 title="feat: regenerate SDK from upstream OpenAPI spec"
-if [[ -s .commit-message ]]; then
-  candidate=$(head -n 1 .commit-message)
-  if [[ "$candidate" =~ ^(feat|fix|chore)!?:[[:space:]][^[:space:]].* && ${#candidate} -le 72 ]]; then
+if [[ "${CLASSIFICATION_SUCCEEDED:-true}" == "true" && -s .commit-message ]]; then
+  candidate=$(< .commit-message)
+  if [[ "$candidate" =~ ^(feat:|fix:|feat!:|chore:)\ [^[:space:]] &&
+        ! "$candidate" =~ [[:cntrl:]] && ${#candidate} -le 72 ]]; then
     title="$candidate"
   else
     echo "::notice::Invalid generated commit title; using the fallback title."
